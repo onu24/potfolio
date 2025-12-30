@@ -8,7 +8,8 @@ import {
     query,
     orderBy,
     serverTimestamp,
-    type DocumentData
+    type DocumentData,
+    writeBatch
 } from "firebase/firestore"
 import { db } from "./firebase"
 
@@ -69,6 +70,28 @@ export const migrateProjects = async () => {
         }
     } catch (error) {
         console.error("Migration failed: ", error)
+    }
+}
+
+export const resetAndSeedProjects = async () => {
+    try {
+        console.log("Resetting database...")
+        const q = collection(db, COLLECTION_NAME)
+        const snapshot = await getDocs(q)
+
+        // Delete all existing documents
+        const deletePromises = snapshot.docs.map(doc => deleteProject(doc.id))
+        await Promise.all(deletePromises)
+
+        console.log("Old data cleared. Seeding new data...")
+        // Seed with migration data
+        for (const project of MIGRATION_PROJECTS) {
+            await addProject(project)
+        }
+        console.log("Database seeded successfully.")
+    } catch (error) {
+        console.error("Reset failed: ", error)
+        throw error
     }
 }
 

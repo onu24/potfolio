@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
-import { getProjects, addProject, updateProject, deleteProject, type Project } from "@/lib/firestore"
+import { getProjects, addProject, updateProject, deleteProject, resetAndSeedProjects, type Project } from "@/lib/firestore"
 
 export default function AdminPage() {
     const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -144,6 +144,21 @@ export default function AdminPage() {
         }
     }
 
+    const handleReset = async () => {
+        if (!confirm("DANGER: This will delete ALL current projects and reset to defaults. Are you sure?")) return
+
+        setLoading(true)
+        try {
+            await resetAndSeedProjects()
+            toast.success("Database reset to defaults")
+            fetchProjects()
+        } catch (error) {
+            toast.error("Failed to reset database")
+        } finally {
+            setLoading(false)
+        }
+    }
+
     if (!isAuthenticated) {
         return (
             <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6">
@@ -205,6 +220,16 @@ export default function AdminPage() {
                         </Button>
                     </div>
                 </header>
+
+                <div className="flex justify-end mb-6">
+                    <Button
+                        variant="ghost"
+                        onClick={handleReset}
+                        className="text-xs text-red-400 hover:text-red-300 hover:bg-red-900/20"
+                    >
+                        ⚠ Reset Database to Defaults
+                    </Button>
+                </div>
 
                 {loading ? (
                     <div className="flex justify-center items-center py-24">
