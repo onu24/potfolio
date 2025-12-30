@@ -54,7 +54,7 @@ const MIGRATION_PROJECTS: Omit<Project, "id" | "createdAt">[] = [
         link: "https://potfolio-pearl.vercel.app",
         category: "Portfolio",
         featured: true,
-        imageUrl: "",
+        imageUrl: "/projects/portfolio.jpg",
     },
 ]
 
