@@ -87,11 +87,23 @@ export function ProjectsSection() {
               >
                 <div className="aspect-video relative overflow-hidden bg-slate-900 border-b border-white/5">
                   {project.imageUrl ? (
-                    <img
-                      src={project.imageUrl}
-                      alt={project.title}
-                      className="object-cover w-full h-full grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 opacity-60 group-hover:opacity-100"
-                    />
+                    <>
+                      <img
+                        src={project.imageUrl}
+                        alt={project.title}
+                        className="object-cover w-full h-full grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 opacity-60 group-hover:opacity-100"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const fallback = target.nextElementSibling as HTMLElement;
+                          if (fallback) fallback.style.display = 'flex';
+                        }}
+                      />
+                      <div className="hidden w-full h-full bg-gradient-to-br from-slate-900 to-slate-950 items-center justify-center">
+                        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-50" />
+                        <h4 className="text-2xl font-bold text-white/20">{project.title}</h4>
+                      </div>
+                    </>
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-slate-900 to-slate-950 flex items-center justify-center">
                       <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-50" />

@@ -89,10 +89,12 @@ export const getProjects = async (): Promise<Project[]> => {
 
 export const addProject = async (project: Omit<Project, "id" | "createdAt">) => {
     try {
+        console.log("Firestore: Adding new project with data:", project)
         const docRef = await addDoc(collection(db, COLLECTION_NAME), {
             ...project,
             createdAt: serverTimestamp(),
         })
+        console.log("Firestore: Project added successfully with ID:", docRef.id)
         return docRef.id
     } catch (error) {
         console.error("Error adding project: ", error)
@@ -102,8 +104,10 @@ export const addProject = async (project: Omit<Project, "id" | "createdAt">) => 
 
 export const updateProject = async (id: string, project: Partial<Project>) => {
     try {
+        console.log(`Firestore: Updating project ${id} with data:`, project)
         const docRef = doc(db, COLLECTION_NAME, id)
         await updateDoc(docRef, project)
+        console.log(`Firestore: Project ${id} updated successfully`)
     } catch (error) {
         console.error("Error updating project: ", error)
         throw error

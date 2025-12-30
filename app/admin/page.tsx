@@ -112,6 +112,8 @@ export default function AdminPage() {
                 imageUrl,
             }
 
+            console.log("Admin: Submitting project data to Firestore:", projectData)
+
             if (editingProject?.id) {
                 await updateProject(editingProject.id, projectData)
                 toast.success("Project updated successfully")
@@ -365,7 +367,14 @@ export default function AdminPage() {
                                                 placeholder="https://example.com/image.jpg"
                                                 className="bg-white/5 border-white/10 text-white"
                                             />
-                                            <p className="text-[10px] text-slate-500 uppercase tracking-widest font-medium px-1">Past a direct image URL (e.g., from Imgur, Cloudinary, etc.)</p>
+                                            <div className="flex justify-between items-center px-1">
+                                                <p className="text-[10px] text-slate-500 uppercase tracking-widest font-medium">Paste a direct image URL (e.g., from Imgur, Cloudinary, etc.)</p>
+                                                {imageUrl && (
+                                                    <span className="text-[9px] text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter">
+                                                        URL Detected
+                                                    </span>
+                                                )}
+                                            </div>
                                         </div>
 
                                         {imagePreview && (
