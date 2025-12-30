@@ -22,6 +22,14 @@ export interface Project {
     category: string
     featured: boolean
     imageUrl: string
+    imageId?: string // Reference to project_images document
+    createdAt?: any
+}
+
+export interface ProjectImage {
+    id?: string
+    url: string
+    alt: string
     createdAt?: any
 }
 
@@ -36,6 +44,18 @@ export interface ContactMessage {
 
 const COLLECTION_NAME = "projects"
 const MESSAGES_COLLECTION = "messages"
+const IMAGES_COLLECTION_NAME = "project_images"
+
+const MIGRATION_IMAGES: Omit<ProjectImage, "id" | "createdAt">[] = [
+    {
+        url: "/projects/learnsphere.jpg",
+        alt: "Learnsphere Project Screenshot"
+    },
+    {
+        url: "/projects/portfolio.jpg",
+        alt: "Portfolio Project Screenshot"
+    }
+]
 
 const MIGRATION_PROJECTS: Omit<Project, "id" | "createdAt">[] = [
     {
@@ -45,7 +65,8 @@ const MIGRATION_PROJECTS: Omit<Project, "id" | "createdAt">[] = [
         link: "https://learnsphere-v1.vercel.app",
         category: "SaaS",
         featured: true,
-        imageUrl: "/projects/learnsphere.jpg",
+        imageUrl: "", // Will be populated from reference
+        // imageId will be added dynamically during seed
     },
     {
         title: "Personal Portfolio – Full Stack Developer",
@@ -54,7 +75,7 @@ const MIGRATION_PROJECTS: Omit<Project, "id" | "createdAt">[] = [
         link: "https://potfolio-pearl.vercel.app",
         category: "Portfolio",
         featured: true,
-        imageUrl: "/projects/portfolio.jpg",
+        imageUrl: "", // Will be populated from reference
     },
 ]
 
@@ -76,17 +97,55 @@ export const migrateProjects = async () => {
 export const resetAndSeedProjects = async () => {
     try {
         console.log("Resetting database...")
-        const q = collection(db, COLLECTION_NAME)
-        const snapshot = await getDocs(q)
 
-        // Delete all existing documents
-        const deletePromises = snapshot.docs.map(doc => deleteProject(doc.id))
-        await Promise.all(deletePromises)
+        // Clear Projects
+        const qProjects = collection(db, COLLECTION_NAME)
+        const snapshotProjects = await getDocs(qProjects)
+        const deleteProjectsPromises = snapshotProjects.docs.map(doc => deleteProject(doc.id))
+
+        // Clear Images
+        const qImages = collection(db, IMAGES_COLLECTION_NAME)
+        const snapshotImages = await getDocs(qImages)
+        const deleteImagesPromises = snapshotImages.docs.map(doc => deleteDoc(doc.ref))
+
+        await Promise.all([...deleteProjectsPromises, ...deleteImagesPromises])
 
         console.log("Old data cleared. Seeding new data...")
-        // Seed with migration data
+
+        // 1. Seed Images and capture their IDs
+        const imageIds: Record<string, string> = {} // url -> firestore_id
+
+        for (const image of MIGRATION_IMAGES) {
+            const docRef = await addDoc(collection(db, IMAGES_COLLECTION_NAME), {
+                ...image,
+                createdAt: serverTimestamp(),
+            })
+            imageIds[image.url] = docRef.id
+            console.log(`Seeded image: ${image.url} -> ID: ${docRef.id}`)
+        }
+
+        // 2. Seed Projects with references
         for (const project of MIGRATION_PROJECTS) {
-            await addProject(project)
+            // Determine which image belongs to which project
+            let targetImageId: string | undefined
+            let targetImageUrl = ""
+
+            // Simple logic to match project to image based on known data
+            if (project.title.includes("Learnsphere")) {
+                targetImageUrl = "/projects/learnsphere.jpg"
+            } else if (project.title.includes("Portfolio")) {
+                targetImageUrl = "/projects/portfolio.jpg"
+            }
+
+            if (targetImageUrl && imageIds[targetImageUrl]) {
+                targetImageId = imageIds[targetImageUrl]
+            }
+
+            await addProject({
+                ...project,
+                imageUrl: targetImageUrl, // Denormalized for easy display
+                imageId: targetImageId,   // Reference for structure
+            })
         }
         console.log("Database seeded successfully.")
     } catch (error) {
