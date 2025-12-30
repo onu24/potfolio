@@ -5,30 +5,32 @@ import { ArrowUpRight } from "lucide-react"
 
 const projects = [
   {
+    id: "1",
     title: "Learnsphere – e-commerce learning platform",
     category: "E-commerce Platform",
-    tags: ["Next.js", "Firebase", "Tailwind", "Vercel", "Google AI Studio", "Antigravity"],
+    techStack: ["Next.js", "Firebase", "Tailwind", "Vercel", "Google AI Studio", "Antigravity"],
     description: "A clean e-commerce interface for browsing and purchasing courses. Built with modern full-stack tools, focusing on user experience and reliable deployments.",
     link: "https://learnsphere-v1.vercel.app",
-    image: "/modern-saas-dashboard-ui.jpg",
+    featured: true,
   },
   {
-    title: "Personal Portfolio – Full Stack Developer",
+    id: "2",
+    title: "Personal Portfolio – Digital space",
     category: "Portfolio",
-    tags: ["Next.js", "Tailwind", "Vercel", "v0", "React"],
+    techStack: ["Next.js", "Tailwind", "Vercel", "v0", "React"],
     description: "A minimal, dark-themed portfolio showcasing my work and skills. Built with Next.js, Tailwind, and deployed on Vercel. Focused on clean typography, spacing, and accessibility.",
     link: "https://potfolio-pearl.vercel.app",
-    image: "/minimalist-portfolio-design.jpg",
+    featured: true,
   },
 ]
 
-const fadeUp = {
-  initial: { opacity: 0, y: 40 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-}
-
 export function ProjectsSection() {
+  const fadeUp = {
+    initial: { opacity: 0, y: 40 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true },
+  }
+
   return (
     <section id="projects" className="relative py-16 md:py-24 bg-background">
       <div className="max-w-screen-xl mx-auto px-6">
@@ -62,7 +64,7 @@ export function ProjectsSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-5xl mx-auto">
           {projects.map((project, index) => (
             <motion.div
-              key={project.title}
+              key={project.id}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -70,18 +72,16 @@ export function ProjectsSection() {
               whileHover={{ y: -8 }}
               className="group relative flex flex-col rounded-3xl bg-white/[0.02] border border-white/[0.06] overflow-hidden hover:bg-white/[0.04] hover:border-purple-500/30 transition-all duration-500"
             >
-              <div className="aspect-video relative overflow-hidden bg-slate-900">
-                <img
-                  src={project.image || "/placeholder.svg"}
-                  alt={project.title}
-                  className="object-cover w-full h-full grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 opacity-60 group-hover:opacity-100"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#01030d] to-transparent opacity-40" />
+              <div className="aspect-video relative overflow-hidden bg-slate-900 flex items-center justify-center p-8 text-center">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-50" />
+                <div className="relative z-10">
+                  <h4 className="text-2xl font-bold text-white/40">{project.title}</h4>
+                </div>
               </div>
 
               <div className="p-8 flex flex-col flex-grow">
                 <div className="flex items-center gap-3 mb-6 flex-wrap">
-                  {project.tags.map((tag) => (
+                  {project.techStack.map((tag) => (
                     <span
                       key={tag}
                       className="text-[10px] font-semibold tracking-wider uppercase px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/10 text-slate-400 group-hover:text-slate-200 group-hover:border-purple-500/30 transition-all duration-300"
@@ -100,6 +100,8 @@ export function ProjectsSection() {
                 {project.link && (
                   <a
                     href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-sm font-bold text-white/60 group-hover:text-white transition-colors duration-300 mt-auto"
                   >
                     View project
