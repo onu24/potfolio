@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Plus, Pencil, Trash2, LogOut, ExternalLink, ShieldCheck, Loader2, Image as ImageIcon, X } from "lucide-react"
+import { Plus, Pencil, Trash2, LogOut, ExternalLink, ShieldCheck, Loader2, Image as ImageIcon, X, Inbox } from "lucide-react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -184,6 +185,11 @@ export default function AdminPage() {
                         <p className="text-slate-400 mt-2">Manage your portfolio projects dynamically.</p>
                     </div>
                     <div className="flex gap-4">
+                        <Button asChild variant="secondary" className="bg-white/5 hover:bg-white/10 text-white border-white/10">
+                            <Link href="/admin/messages">
+                                <Inbox className="w-4 h-4 mr-2" /> Messages
+                            </Link>
+                        </Button>
                         <Button
                             onClick={() => openForm()}
                             className="bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2"

@@ -1,10 +1,11 @@
-"use client"
-
+import { useState } from "react"
 import { motion } from "framer-motion"
-import { Mail, Send } from "lucide-react"
+import { Mail, Send, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { toast } from "sonner"
+import { addMessage } from "@/lib/firestore"
 
 const fadeUp = {
   initial: { opacity: 0, y: 30 },
@@ -13,6 +14,40 @@ const fadeUp = {
 }
 
 export function ContactSection() {
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [message, setMessage] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!name || !email || !message) {
+      toast.error("Please fill in all fields")
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      await addMessage({
+        name,
+        email,
+        message,
+      })
+
+      toast.success("Message sent successfully! I'll get back to you soon.")
+      setName("")
+      setEmail("")
+      setMessage("")
+    } catch (error: any) {
+      console.error("Failed to send message:", error)
+      toast.error("Failed to send message. Please try again later.")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
     <section id="contact" className="relative py-16 md:py-24 bg-background">
       <div className="max-w-screen-xl mx-auto px-6">
@@ -75,6 +110,7 @@ export function ContactSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1, ease: [0.19, 1, 0.22, 1] }}
+            onSubmit={handleSubmit}
             className="space-y-6 bg-white/[0.02] border border-white/[0.06] p-8 md:p-12 rounded-3xl backdrop-blur-sm"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -82,7 +118,11 @@ export function ContactSection() {
                 <label className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 ml-1">Name</label>
                 <Input
                   placeholder="Your name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  disabled={isSubmitting}
                   className="bg-white/[0.03] border-white/10 rounded-xl h-14 focus:border-purple-500/50 transition-all duration-300 px-5 text-white placeholder:text-slate-600"
+                  suppressHydrationWarning
                 />
               </div>
               <div className="space-y-2">
@@ -90,7 +130,11 @@ export function ContactSection() {
                 <Input
                   type="email"
                   placeholder="Your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={isSubmitting}
                   className="bg-white/[0.03] border-white/10 rounded-xl h-14 focus:border-purple-500/50 transition-all duration-300 px-5 text-white placeholder:text-slate-600"
+                  suppressHydrationWarning
                 />
               </div>
             </div>
@@ -98,12 +142,26 @@ export function ContactSection() {
               <label className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 ml-1">Message</label>
               <Textarea
                 placeholder="How can I help you?"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                disabled={isSubmitting}
                 className="bg-white/[0.03] border-white/10 rounded-2xl min-h-[160px] focus:border-purple-500/50 transition-all duration-300 p-5 text-white placeholder:text-slate-600 resize-none"
+                suppressHydrationWarning
               />
             </div>
-            <Button className="w-full rounded-2xl bg-white/[0.05] border border-white/10 text-white hover:bg-white/[0.1] h-16 text-lg font-bold transition-all duration-500 flex items-center justify-center gap-3 group">
-              Send Message
-              <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full rounded-2xl bg-white/[0.05] border border-white/10 text-white hover:bg-white/[0.1] h-16 text-lg font-bold transition-all duration-500 flex items-center justify-center gap-3 group"
+            >
+              {isSubmitting ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <>
+                  Send Message
+                  <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+                </>
+              )}
             </Button>
           </motion.form>
         </div>

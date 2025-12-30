@@ -24,7 +24,17 @@ export interface Project {
     createdAt?: any
 }
 
+export interface ContactMessage {
+    id?: string
+    name: string
+    email: string
+    message: string
+    read: boolean
+    createdAt?: any
+}
+
 const COLLECTION_NAME = "projects"
+const MESSAGES_COLLECTION = "messages"
 
 const MIGRATION_PROJECTS: Omit<Project, "id" | "createdAt">[] = [
     {
@@ -120,6 +130,55 @@ export const deleteProject = async (id: string) => {
         await deleteDoc(docRef)
     } catch (error) {
         console.error("Error deleting project: ", error)
+        throw error
+    }
+}
+
+// Message Operations
+export const addMessage = async (message: Omit<ContactMessage, "id" | "createdAt" | "read">) => {
+    try {
+        const docRef = await addDoc(collection(db, MESSAGES_COLLECTION), {
+            ...message,
+            read: false,
+            createdAt: serverTimestamp(),
+        })
+        return docRef.id
+    } catch (error) {
+        console.error("Error adding message: ", error)
+        throw error
+    }
+}
+
+export const getAllMessages = async (): Promise<ContactMessage[]> => {
+    try {
+        const q = query(collection(db, MESSAGES_COLLECTION), orderBy("createdAt", "desc"))
+        const querySnapshot = await getDocs(q)
+        return querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        })) as ContactMessage[]
+    } catch (error) {
+        console.error("Error fetching messages: ", error)
+        throw error
+    }
+}
+
+export const markMessageAsRead = async (id: string) => {
+    try {
+        const docRef = doc(db, MESSAGES_COLLECTION, id)
+        await updateDoc(docRef, { read: true })
+    } catch (error) {
+        console.error("Error marking message as read: ", error)
+        throw error
+    }
+}
+
+export const deleteMessage = async (id: string) => {
+    try {
+        const docRef = doc(db, MESSAGES_COLLECTION, id)
+        await deleteDoc(docRef)
+    } catch (error) {
+        console.error("Error deleting message: ", error)
         throw error
     }
 }
