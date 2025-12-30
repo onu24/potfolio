@@ -14,14 +14,14 @@ const fadeUp = {
 
 export function ContactSection() {
   return (
-    <section id="contact" className="relative py-32 md:py-48 bg-background">
+    <section id="contact" className="relative py-16 md:py-24 bg-background">
       <div className="max-w-screen-xl mx-auto px-6">
         <motion.div
           initial="initial"
           whileInView="whileInView"
           viewport={{ once: true }}
           transition={{ duration: 0.8, staggerChildren: 0.15, ease: [0.19, 1, 0.22, 1] }}
-          className="text-center mb-24"
+          className="text-center mb-12 md:mb-20"
         >
           <motion.span
             variants={fadeUp}
@@ -43,7 +43,7 @@ export function ContactSection() {
           </motion.p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20 items-start">
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}

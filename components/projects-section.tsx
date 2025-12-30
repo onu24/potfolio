@@ -62,14 +62,14 @@ const fadeUp = {
 
 export function ProjectsSection() {
   return (
-    <section id="projects" className="relative py-32 md:py-48 bg-background">
+    <section id="projects" className="relative py-16 md:py-24 bg-background">
       <div className="max-w-screen-xl mx-auto px-6">
         <motion.div
           initial="initial"
           whileInView="whileInView"
           viewport={{ once: true }}
           transition={{ duration: 0.8, staggerChildren: 0.15, ease: [0.19, 1, 0.22, 1] }}
-          className="text-center mb-24"
+          className="text-center mb-12 md:mb-20"
         >
           <motion.span
             variants={fadeUp}
@@ -91,7 +91,7 @@ export function ProjectsSection() {
           </motion.p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
           {projects.map((project, index) => (
             <motion.div
               key={project.title}

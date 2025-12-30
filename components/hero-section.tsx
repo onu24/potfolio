@@ -11,7 +11,7 @@ const fadeUp = {
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden bg-background">
+    <section className="relative min-h-screen flex flex-col items-center justify-center py-24 md:py-32 px-6 overflow-hidden bg-background">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-[#01030d] pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(124,58,237,0.12)_0%,_transparent_65%)] pointer-events-none" />
 
@@ -30,24 +30,24 @@ export function HeroSection() {
 
         <motion.h1
           variants={fadeUp}
-          className="text-6xl md:text-8xl lg:text-[7.5rem] font-bold tracking-[-0.04em] bg-gradient-to-b from-white via-white to-slate-400 bg-clip-text text-transparent mb-6 leading-[0.95]"
+          className="text-6xl md:text-8xl lg:text-[7.5rem] font-bold tracking-[-0.04em] bg-gradient-to-b from-white via-white to-slate-400 bg-clip-text text-transparent mb-8 leading-[0.95]"
         >
           Mayank Chauhan
         </motion.h1>
 
-        <motion.h2 variants={fadeUp} className="text-xl md:text-2xl font-medium tracking-[0.05em] text-slate-300 mb-10">
+        <motion.h2 variants={fadeUp} className="text-xl md:text-2xl font-medium tracking-[0.05em] text-slate-300 mb-12">
           Building reliable web experiences
         </motion.h2>
 
         <motion.p
           variants={fadeUp}
-          className="text-lg md:text-xl text-slate-400 leading-relaxed md:leading-9 text-pretty max-w-[680px] mb-14 px-4"
+          className="text-lg md:text-xl text-slate-400 leading-relaxed text-pretty max-w-2xl mb-16 px-4"
         >
           I design and develop high-performance applications that bridge the gap between complex backend logic and
           intuitive user interfaces. Currently crafting digital solutions that scale.
         </motion.p>
 
-        <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-8">
+        <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-6 md:gap-8">
           <Button
             asChild
             size="lg"

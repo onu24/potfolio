@@ -5,15 +5,19 @@ import { motion } from "framer-motion"
 const techStack = [
   {
     category: "Frontend",
-    items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "Zustand", "Redux"],
+    description: "Building responsive interfaces for e-commerce learning platforms",
+    items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "Zustand"],
   },
   {
     category: "Backend",
-    items: ["Node.js", "Express", "PostgreSQL", "MongoDB", "Prisma", "REST APIs", "GraphQL"],
+    description: "Handling auth, data storage, and API logic",
+    items: ["Node.js", "Firebase", "REST APIs", "Express", "MongoDB"],
+    exploring: "Exploring: Prisma, GraphQL",
   },
   {
     category: "Tools & Infra",
-    items: ["Git", "Docker", "AWS", "Vercel", "CI/CD", "Postman", "Linux"],
+    description: "Deploying projects and iterating with AI assistance",
+    items: ["Git", "Vercel", "Google AI Studio", "Antigravity", "Postman"],
   },
 ]
 
@@ -25,14 +29,14 @@ const fadeUp = {
 
 export function TechStackSection() {
   return (
-    <section id="tech" className="relative py-32 md:py-48 bg-background">
+    <section id="tech" className="relative py-20 md:py-24 bg-background">
       <div className="max-w-screen-xl mx-auto px-6">
         <motion.div
           initial="initial"
           whileInView="whileInView"
           viewport={{ once: true }}
           transition={{ duration: 0.8, staggerChildren: 0.15, ease: [0.19, 1, 0.22, 1] }}
-          className="text-center mb-24"
+          className="text-center mb-12 md:mb-20"
         >
           <motion.span
             variants={fadeUp}
@@ -46,9 +50,15 @@ export function TechStackSection() {
           >
             Things I work with
           </motion.h2>
+          <motion.p
+            variants={fadeUp}
+            className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed text-pretty"
+          >
+            The stack I use to build and ship products like Learnsphere, from UI components to deployment.
+          </motion.p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {techStack.map((stack, index) => (
             <motion.div
               key={stack.category}
@@ -56,10 +66,11 @@ export function TechStackSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: index * 0.15, ease: [0.19, 1, 0.22, 1] }}
-              className="group relative p-10 md:p-12 rounded-3xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-purple-500/30 transition-all duration-500"
+              className="group relative px-6 py-6 md:px-8 md:py-8 rounded-3xl bg-slate-950/60 border border-white/10 hover:bg-slate-900/80 hover:border-white/20 transition-all duration-500 shadow-lg space-y-4"
             >
-              <h3 className="text-2xl font-bold text-white mb-8 tracking-tight">{stack.category}</h3>
-              <div className="flex flex-wrap gap-3">
+              <h3 className="text-2xl font-bold text-white tracking-tight">{stack.category}</h3>
+              <p className="text-slate-500 text-sm leading-relaxed">{stack.description}</p>
+              <div className="flex flex-wrap gap-2 md:gap-3">
                 {stack.items.map((item) => (
                   <span
                     key={item}
@@ -69,6 +80,9 @@ export function TechStackSection() {
                   </span>
                 ))}
               </div>
+              {stack.exploring && (
+                <p className="text-slate-600 text-xs italic pt-2">{stack.exploring}</p>
+              )}
             </motion.div>
           ))}
         </div>

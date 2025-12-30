@@ -4,33 +4,22 @@ import { motion } from "framer-motion"
 
 const experiences = [
   {
-    role: "Full Stack Developer",
-    company: "Freelance",
-    period: "2023 — Present",
+    role: "Learnsphere – e-commerce learning platform",
+    company: "Solo full-stack project",
+    period: "2025",
     points: [
-      "Architected and deployed custom SaaS solutions for early-stage startups using Next.js and Node.js.",
-      "Optimized database performance and query efficiency for high-traffic content platforms.",
-      "Collaborated with design teams to implement pixel-perfect, accessible user interfaces.",
+      "Built a clean e-commerce style UI for browsing and purchasing courses, handling everything from design to implementation.",
+      "Used Google AI Studio and Antigravity to iterate faster on frontend logic and backend workflows.",
+      "Implemented Firebase for auth and database, keeping the architecture simple but reliable.",
+      "Deployed on Vercel so it behaves like a real product, not just a local demo.",
     ],
   },
   {
-    role: "Backend Engineer",
-    company: "DevSystems Inc.",
-    period: "2021 — 2023",
+    role: "Next up – SaaS dashboard",
+    company: "Planned project",
+    period: "Coming soon",
     points: [
-      "Built and maintained core microservices responsible for high-volume data processing.",
-      "Implemented automated monitoring and alerting systems reducing downtime by 30%.",
-      "Led the migration of legacy REST APIs to modern GraphQL architecture.",
-    ],
-  },
-  {
-    role: "Junior Web Developer",
-    company: "WebFlow Agency",
-    period: "2019 — 2021",
-    points: [
-      "Developed responsive frontend components and landing pages for enterprise clients.",
-      "Assisted in the maintenance of internal tooling and automated testing suites.",
-      "Contributed to cross-browser compatibility and mobile-first optimization projects.",
+      "Building a dashboard to practice payments, charts, and admin workflows.",
     ],
   },
 ]
@@ -43,34 +32,40 @@ const fadeUp = {
 
 export function ExperienceSection() {
   return (
-    <section id="experience" className="relative py-32 md:py-48 bg-background">
+    <section id="experience" className="relative py-16 md:py-24 bg-background">
       <div className="max-w-screen-xl mx-auto px-6">
         <motion.div
           initial="initial"
           whileInView="whileInView"
           viewport={{ once: true }}
           transition={{ duration: 0.8, staggerChildren: 0.15, ease: [0.19, 1, 0.22, 1] }}
-          className="text-center mb-24"
+          className="text-center mb-12 md:mb-20"
         >
           <motion.span
             variants={fadeUp}
             className="text-[11px] font-medium tracking-[0.4em] uppercase text-slate-500 mb-8 block"
           >
-            EXPERIENCE
+            PROJECT MILESTONE
           </motion.span>
           <motion.h2
             variants={fadeUp}
             className="text-4xl md:text-6xl font-bold tracking-tight text-white mb-8 leading-tight"
           >
-            Where I’ve been working
+            The product I'm proud of
           </motion.h2>
+          <motion.p
+            variants={fadeUp}
+            className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed text-pretty"
+          >
+            A closer look at the e-commerce project where I handled everything from UI to deployment.
+          </motion.p>
         </motion.div>
 
         <div className="max-w-3xl mx-auto relative">
           {/* Vertical line */}
           <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-purple-500/50 via-white/10 to-transparent md:left-1/2 md:-ml-px" />
 
-          <div className="space-y-20">
+          <div className="space-y-12 md:space-y-16">
             {experiences.map((exp, index) => (
               <motion.div
                 key={exp.company + exp.period}

@@ -32,7 +32,7 @@ const services = [
 
 export function ServicesSection() {
   return (
-    <section id="services" className="relative py-32 md:py-48 overflow-hidden bg-background">
+    <section id="services" className="relative py-16 md:py-24 overflow-hidden bg-background">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(124,58,237,0.05)_0%,_transparent_60%)] pointer-events-none" />
 
       <div className="relative z-10 max-w-screen-xl mx-auto px-6">
@@ -41,7 +41,7 @@ export function ServicesSection() {
           whileInView="whileInView"
           viewport={{ once: true }}
           transition={{ duration: 0.8, staggerChildren: 0.15, ease: [0.19, 1, 0.22, 1] }}
-          className="text-center mb-24"
+          className="text-center mb-12 md:mb-20"
         >
           <motion.span
             variants={fadeUp}
@@ -63,7 +63,7 @@ export function ServicesSection() {
           </motion.p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
           {services.map((service, index) => (
             <motion.div
               key={service.title}

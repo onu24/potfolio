@@ -5,14 +5,14 @@ import { Github, Linkedin, Mail } from "lucide-react"
 
 export function Footer() {
   return (
-    <footer className="relative py-20 bg-background border-t border-white/[0.05]">
+    <footer className="relative py-12 md:py-16 bg-background border-t border-white/[0.05]">
       <div className="max-w-screen-xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: [0.19, 1, 0.22, 1] }}
-          className="flex flex-col md:flex-row items-center justify-between gap-8"
+          className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8"
         >
           <div className="text-center md:text-left">
             <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">Mayank Chauhan</h3>
