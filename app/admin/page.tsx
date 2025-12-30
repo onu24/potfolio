@@ -7,8 +7,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
-import { storage } from "@/lib/firebase"
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { getProjects, addProject, updateProject, deleteProject, type Project } from "@/lib/firestore"
 
 export default function AdminPage() {
@@ -27,7 +25,6 @@ export default function AdminPage() {
     const [category, setCategory] = useState("")
     const [featured, setFeatured] = useState(false)
     const [imageUrl, setImageUrl] = useState("")
-    const [imageFile, setImageFile] = useState<File | null>(null)
     const [imagePreview, setImagePreview] = useState<string | null>(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -69,17 +66,6 @@ export default function AdminPage() {
         toast.success("Logged out successfully")
     }
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0]
-        if (file) {
-            setImageFile(file)
-            const reader = new FileReader()
-            reader.onloadend = () => {
-                setImagePreview(reader.result as string)
-            }
-            reader.readAsDataURL(file)
-        }
-    }
 
     const openForm = (project: Project | null = null) => {
         if (project) {
@@ -103,7 +89,6 @@ export default function AdminPage() {
             setImageUrl("")
             setImagePreview(null)
         }
-        setImageFile(null)
         setIsFormOpen(true)
     }
 
@@ -117,14 +102,6 @@ export default function AdminPage() {
         setIsSubmitting(true)
 
         try {
-            let finalImageUrl = imageUrl
-
-            if (imageFile) {
-                const storageRef = ref(storage, `projects/${Date.now()}_${imageFile.name}`)
-                const snapshot = await uploadBytes(storageRef, imageFile)
-                finalImageUrl = await getDownloadURL(snapshot.ref)
-            }
-
             const projectData = {
                 title,
                 description,
@@ -132,7 +109,7 @@ export default function AdminPage() {
                 link,
                 category,
                 featured,
-                imageUrl: finalImageUrl,
+                imageUrl,
             }
 
             if (editingProject?.id) {
@@ -144,9 +121,9 @@ export default function AdminPage() {
             }
             setIsFormOpen(false)
             fetchProjects()
-        } catch (error) {
-            console.error("Operation failed", error)
-            toast.error("Operation failed")
+        } catch (error: any) {
+            console.error("Firestore Operation failed:", error)
+            toast.error(`Failed to save project: ${error.message}`)
         } finally {
             setIsSubmitting(false)
         }
@@ -377,39 +354,40 @@ export default function AdminPage() {
 
                                     <div className="space-y-4">
                                         <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Project Image / Screenshot</label>
-                                        <div className="relative">
-                                            {imagePreview ? (
-                                                <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/10 bg-slate-800 group">
-                                                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => {
-                                                            setImagePreview(null)
-                                                            setImageFile(null)
-                                                            setImageUrl("")
-                                                        }}
-                                                        className="absolute top-2 right-2 p-2 bg-black/60 backdrop-blur-md rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                                                    >
-                                                        <X className="w-4 h-4" />
-                                                    </button>
-                                                </div>
-                                            ) : (
-                                                <label className="flex flex-col items-center justify-center aspect-video w-full rounded-2xl border-2 border-dashed border-white/10 bg-white/5 hover:bg-white/10 transition-colors cursor-pointer group">
-                                                    <div className="flex flex-col items-center gap-2">
-                                                        <div className="p-3 rounded-xl bg-white/5 text-slate-400 group-hover:text-purple-400 group-hover:bg-purple-500/10 transition-all">
-                                                            <Plus className="w-6 h-6" />
-                                                        </div>
-                                                        <span className="text-sm text-slate-500 font-medium">Click to upload screenshot</span>
-                                                    </div>
-                                                    <input
-                                                        type="file"
-                                                        accept="image/*"
-                                                        onChange={handleImageChange}
-                                                        className="hidden"
-                                                    />
-                                                </label>
-                                            )}
+
+                                        <div className="space-y-2">
+                                            <Input
+                                                value={imageUrl}
+                                                onChange={(e) => {
+                                                    setImageUrl(e.target.value)
+                                                    setImagePreview(e.target.value)
+                                                }}
+                                                placeholder="https://example.com/image.jpg"
+                                                className="bg-white/5 border-white/10 text-white"
+                                            />
+                                            <p className="text-[10px] text-slate-500 uppercase tracking-widest font-medium px-1">Past a direct image URL (e.g., from Imgur, Cloudinary, etc.)</p>
                                         </div>
+
+                                        {imagePreview && (
+                                            <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/10 bg-slate-800 group">
+                                                <img
+                                                    src={imagePreview}
+                                                    alt="Preview"
+                                                    className="w-full h-full object-cover"
+                                                    onError={() => setImagePreview(null)}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setImagePreview(null)
+                                                        setImageUrl("")
+                                                    }}
+                                                    className="absolute top-2 right-2 p-2 bg-black/60 backdrop-blur-md rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                                >
+                                                    <X className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
 
                                     <div className="flex items-center gap-3 py-2">
