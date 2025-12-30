@@ -15,6 +15,17 @@ const experiences = [
     ],
   },
   {
+    role: "Personal Portfolio – Full Stack Developer",
+    company: "Solo design + dev project",
+    period: "2025",
+    points: [
+      "A minimal, dark-themed portfolio that showcases my work and skills in one clean, scrollable page.",
+      "Focus on typography, spacing systems, and subtle animations using Next.js and Tailwind CSS.",
+      "Built and deployed on Vercel so it demonstrates a real, shipped product with professional polish.",
+      "Showcases my approach to design-focused full-stack development and AI-assisted development workflows.",
+    ],
+  },
+  {
     role: "Next up – SaaS dashboard",
     company: "Planned project",
     period: "Coming soon",

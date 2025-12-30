@@ -74,7 +74,7 @@ export function TechStackSection() {
                 {stack.items.map((item) => (
                   <span
                     key={item}
-                    className="px-4 py-2 rounded-xl bg-white/[0.03] border border-white/10 text-slate-400 text-sm font-medium hover:text-white hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300"
+                    className="px-4 py-2 rounded-xl bg-white/[0.03] border border-white/10 text-slate-400 text-sm font-medium hover:text-white hover:bg-white/[0.08] hover:border-white/20 hover:scale-105 hover:shadow-[0_0_20px_rgba(124,58,237,0.3)] transition-all duration-300 cursor-default"
                   >
                     {item}
                   </span>
