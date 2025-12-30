@@ -2,17 +2,42 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { ArrowUpRight, Loader2 } from "lucide-react"
+import { ArrowUpRight, Loader2, Image as ImageIcon } from "lucide-react"
 import { db } from "@/lib/firebase"
-import { collection, query, orderBy, onSnapshot } from "firebase/firestore"
+import { collection, query, orderBy, onSnapshot, limit } from "firebase/firestore"
 import { type Project } from "@/lib/firestore"
+import Image from "next/image"
+
+function SkeletonProjectCard() {
+  return (
+    <div className="rounded-3xl border border-white/5 bg-white/[0.02] overflow-hidden h-full flex flex-col">
+      <div className="aspect-video bg-white/5 animate-pulse" />
+      <div className="p-8 flex-grow space-y-4">
+        <div className="flex gap-2">
+          <div className="h-6 w-20 bg-white/5 rounded-full animate-pulse" />
+          <div className="h-6 w-16 bg-white/5 rounded-full animate-pulse" />
+        </div>
+        <div className="h-8 w-3/4 bg-white/5 rounded-xl animate-pulse" />
+        <div className="space-y-2">
+          <div className="h-4 w-full bg-white/5 rounded-lg animate-pulse" />
+          <div className="h-4 w-5/6 bg-white/5 rounded-lg animate-pulse" />
+          <div className="h-4 w-4/6 bg-white/5 rounded-lg animate-pulse" />
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export function ProjectsSection() {
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const q = query(collection(db, "projects"), orderBy("createdAt", "desc"))
+    const q = query(
+      collection(db, "projects"),
+      orderBy("createdAt", "desc"),
+      limit(10)
+    )
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const projectsData = snapshot.docs.map(doc => ({
@@ -66,8 +91,10 @@ export function ProjectsSection() {
         </motion.div>
 
         {loading ? (
-          <div className="flex justify-center items-center py-24">
-            <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-5xl mx-auto">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <SkeletonProjectCard key={i} />
+            ))}
           </div>
         ) : projects.length === 0 ? (
           <div className="text-center py-24 border border-dashed border-white/10 rounded-3xl">
@@ -87,30 +114,20 @@ export function ProjectsSection() {
               >
                 <div className="aspect-video relative overflow-hidden bg-slate-900 border-b border-white/5">
                   {project.imageUrl ? (
-                    <>
-                      <img
-                        src={project.imageUrl}
-                        alt={project.title}
-                        className="object-cover w-full h-full grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 opacity-60 group-hover:opacity-100"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.style.display = 'none';
-                          const fallback = target.nextElementSibling as HTMLElement;
-                          if (fallback) fallback.style.display = 'flex';
-                        }}
-                      />
-                      <div className="hidden w-full h-full bg-gradient-to-br from-slate-900 to-slate-950 items-center justify-center">
-                        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-50" />
-                        <h4 className="text-2xl font-bold text-white/20">{project.title}</h4>
-                      </div>
-                    </>
+                    <Image
+                      src={project.imageUrl}
+                      alt={project.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 opacity-60 group-hover:opacity-100"
+                    />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-slate-900 to-slate-950 flex items-center justify-center">
                       <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-50" />
                       <h4 className="text-2xl font-bold text-white/20">{project.title}</h4>
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#01030d] to-transparent opacity-40" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#01030d] to-transparent opacity-40 pointer-events-none" />
                 </div>
 
                 <div className="p-8 flex flex-col flex-grow">

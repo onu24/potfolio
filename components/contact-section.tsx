@@ -102,6 +102,9 @@ export function ContactSection() {
       setIsSuccess(true)
       toast.success("Message sent successfully!")
 
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+
       // Reset form after delay
       setTimeout(() => {
         setFormData({ name: "", email: "", message: "" })
@@ -228,7 +231,7 @@ export function ContactSection() {
                       "disabled:opacity-50 disabled:cursor-not-allowed"
                     )}
                     placeholder="Name"
-                    autoFocus
+                  // autoFocus removed to prevent page jump on load
                   />
                   <label
                     htmlFor="name"
