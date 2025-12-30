@@ -13,19 +13,19 @@ const services = [
   {
     title: "Frontend interactions",
     description:
-      "I design responsive, accessible interfaces with clean layouts, meaningful motion, and intuitive user flows.",
+      "Responsive layouts, smooth animations, and component systems that work across devices.",
     icon: Layout,
   },
   {
     title: "Backend APIs",
     description:
-      "I build secure, scalable APIs and services that keep complexity on the server while the UI stays fast and simple.",
+      "REST APIs, Firebase integration, and server logic that handles auth and data without breaking.",
     icon: Code2,
   },
   {
     title: "Systems & data",
     description:
-      "I turn messy requirements and data into stable systems, focusing on monitoring, performance, and reliability.",
+      "Organized databases, deployment pipelines, and monitoring so projects stay live and reliable.",
     icon: Cpu,
   },
 ]

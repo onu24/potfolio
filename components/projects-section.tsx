@@ -5,52 +5,20 @@ import { ArrowUpRight } from "lucide-react"
 
 const projects = [
   {
-    title: "Learnsphere",
-    category: "SaaS",
-    tags: ["EdTech", "Next.js", "PostgreSQL"],
-    description: "A comprehensive learning management system with real-time collaboration features.",
-    link: "#",
+    title: "Learnsphere – e-commerce learning platform",
+    category: "E-commerce Platform",
+    tags: ["Next.js", "Firebase", "Tailwind", "Vercel", "Google AI Studio", "Antigravity"],
+    description: "A clean e-commerce interface for browsing and purchasing courses. Built with modern full-stack tools, focusing on user experience and reliable deployments.",
+    link: "https://learnsphere-v1.vercel.app",
     image: "/modern-saas-dashboard-ui.jpg",
   },
   {
-    title: "Code2Img",
-    category: "Tooling",
-    tags: ["Open Source", "Canvas", "React"],
-    description: "Generate beautiful, shareable snippets of your code in seconds.",
-    link: "#",
-    image: "/developer-tool-interface.png",
-  },
-  {
-    title: "Portfolio v3",
-    category: "Personal",
-    tags: ["Design", "Framer Motion", "Tailwind"],
-    description: "The evolution of my personal digital space, focusing on performance and storytelling.",
-    link: "#",
+    title: "Personal Portfolio – Full Stack Developer",
+    category: "Portfolio",
+    tags: ["Next.js", "Tailwind", "Vercel", "v0", "React"],
+    description: "A minimal, dark-themed portfolio showcasing my work and skills. Built with Next.js, Tailwind, and deployed on Vercel. Focused on clean typography, spacing, and accessibility.",
+    link: "https://potfolio-pearl.vercel.app",
     image: "/minimalist-portfolio-design.jpg",
-  },
-  {
-    title: "Dev Tools Dashboard",
-    category: "SaaS",
-    tags: ["Monitoring", "Analytics", "Node.js"],
-    description: "A centralized hub for tracking system health and deployment metrics.",
-    link: "#",
-    image: "/analytics-dashboard-ui.png",
-  },
-  {
-    title: "AI Content Helper",
-    category: "AI",
-    tags: ["LLM", "OpenAI", "Serverless"],
-    description: "Transform raw ideas into polished content using advanced AI processing.",
-    link: "#",
-    image: "/ai-interface-design.jpg",
-  },
-  {
-    title: "Client CRM",
-    category: "Client Work",
-    tags: ["Enterprise", "Database", "Auth"],
-    description: "Custom-built relationship management system for high-scale retail operations.",
-    link: "#",
-    image: "/enterprise-software-ui.jpg",
   },
 ]
 
@@ -87,11 +55,11 @@ export function ProjectsSection() {
             variants={fadeUp}
             className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed text-pretty"
           >
-            A collection of production-ready applications, open-source tools, and experimental projects.
+            Real projects I've built and deployed.
           </motion.p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-5xl mx-auto">
           {projects.map((project, index) => (
             <motion.div
               key={project.title}
@@ -129,13 +97,15 @@ export function ProjectsSection() {
 
                 <p className="text-slate-400 text-base leading-relaxed mb-8 flex-grow">{project.description}</p>
 
-                <a
-                  href={project.link}
-                  className="inline-flex items-center gap-2 text-sm font-bold text-white/60 group-hover:text-white transition-colors duration-300 mt-auto"
-                >
-                  View project
-                  <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
-                </a>
+                {project.link && (
+                  <a
+                    href={project.link}
+                    className="inline-flex items-center gap-2 text-sm font-bold text-white/60 group-hover:text-white transition-colors duration-300 mt-auto"
+                  >
+                    View project
+                    <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+                  </a>
+                )}
               </div>
             </motion.div>
           ))}

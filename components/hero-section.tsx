@@ -43,8 +43,7 @@ export function HeroSection() {
           variants={fadeUp}
           className="text-lg md:text-xl text-slate-400 leading-relaxed text-pretty max-w-2xl mb-16 px-4"
         >
-          I design and develop high-performance applications that bridge the gap between complex backend logic and
-          intuitive user interfaces. Currently crafting digital solutions that scale.
+          I build web applications from scratch—clean UIs, Firebase backends, and deployments that work. Currently focused on e-commerce learning platforms.
         </motion.p>
 
         <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-6 md:gap-8">

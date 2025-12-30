@@ -39,7 +39,7 @@ export function ContactSection() {
             variants={fadeUp}
             className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed text-pretty"
           >
-            Have a project in mind? Reach out and let's discuss how we can bring it to life.
+            Have a project idea? Let's talk about building it together.
           </motion.p>
         </motion.div>
 
@@ -54,7 +54,7 @@ export function ContactSection() {
             <div className="space-y-6">
               <h3 className="text-3xl font-bold text-white tracking-tight">Get in touch</h3>
               <p className="text-slate-400 text-lg leading-relaxed max-w-md">
-                I'm currently available for freelance projects and full-time opportunities.
+                Open to freelance work and collaboration. Reach out if you have a project or opportunity.
               </p>
             </div>
 
