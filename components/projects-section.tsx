@@ -44,6 +44,7 @@ export function ProjectsSection() {
         id: doc.id,
         ...doc.data()
       })) as Project[]
+      console.log("Projects loaded from Firestore:", projectsData)
       setProjects(projectsData)
       setLoading(false)
     }, (error) => {
