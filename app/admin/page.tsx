@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Plus, Pencil, Trash2, LogOut, ExternalLink, ShieldCheck, Loader2 } from "lucide-react"
+import { Plus, Pencil, Trash2, LogOut, ExternalLink, ShieldCheck, Loader2, Image as ImageIcon, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
+import { storage } from "@/lib/firebase"
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { getProjects, addProject, updateProject, deleteProject, type Project } from "@/lib/firestore"
 
 export default function AdminPage() {
@@ -24,6 +26,9 @@ export default function AdminPage() {
     const [link, setLink] = useState("")
     const [category, setCategory] = useState("")
     const [featured, setFeatured] = useState(false)
+    const [imageUrl, setImageUrl] = useState("")
+    const [imageFile, setImageFile] = useState<File | null>(null)
+    const [imagePreview, setImagePreview] = useState<string | null>(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     useEffect(() => {
@@ -64,6 +69,18 @@ export default function AdminPage() {
         toast.success("Logged out successfully")
     }
 
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (file) {
+            setImageFile(file)
+            const reader = new FileReader()
+            reader.onloadend = () => {
+                setImagePreview(reader.result as string)
+            }
+            reader.readAsDataURL(file)
+        }
+    }
+
     const openForm = (project: Project | null = null) => {
         if (project) {
             setEditingProject(project)
@@ -73,6 +90,8 @@ export default function AdminPage() {
             setLink(project.link)
             setCategory(project.category)
             setFeatured(project.featured)
+            setImageUrl(project.imageUrl || "")
+            setImagePreview(project.imageUrl || null)
         } else {
             setEditingProject(null)
             setTitle("")
@@ -81,7 +100,10 @@ export default function AdminPage() {
             setLink("")
             setCategory("")
             setFeatured(false)
+            setImageUrl("")
+            setImagePreview(null)
         }
+        setImageFile(null)
         setIsFormOpen(true)
     }
 
@@ -93,16 +115,26 @@ export default function AdminPage() {
         }
 
         setIsSubmitting(true)
-        const projectData = {
-            title,
-            description,
-            techStack: techStack.split(",").map((s) => s.trim()).filter((s) => s !== ""),
-            link,
-            category,
-            featured,
-        }
 
         try {
+            let finalImageUrl = imageUrl
+
+            if (imageFile) {
+                const storageRef = ref(storage, `projects/${Date.now()}_${imageFile.name}`)
+                const snapshot = await uploadBytes(storageRef, imageFile)
+                finalImageUrl = await getDownloadURL(snapshot.ref)
+            }
+
+            const projectData = {
+                title,
+                description,
+                techStack: techStack.split(",").map((s) => s.trim()).filter((s) => s !== ""),
+                link,
+                category,
+                featured,
+                imageUrl: finalImageUrl,
+            }
+
             if (editingProject?.id) {
                 await updateProject(editingProject.id, projectData)
                 toast.success("Project updated successfully")
@@ -113,6 +145,7 @@ export default function AdminPage() {
             setIsFormOpen(false)
             fetchProjects()
         } catch (error) {
+            console.error("Operation failed", error)
             toast.error("Operation failed")
         } finally {
             setIsSubmitting(false)
@@ -206,8 +239,17 @@ export default function AdminPage() {
                                     animate={{ opacity: 1, y: 0 }}
                                     className="bg-white/[0.02] border border-white/10 p-6 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 hover:bg-white/[0.04] transition-colors"
                                 >
+                                    <div className="flex-shrink-0 w-24 h-16 rounded-xl bg-slate-800 overflow-hidden border border-white/5">
+                                        {project.imageUrl ? (
+                                            <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <div className="w-full h-full bg-gradient-to-br from-purple-500/20 to-transparent flex items-center justify-center">
+                                                <ImageIcon className="w-6 h-6 text-purple-500/40" />
+                                            </div>
+                                        )}
+                                    </div>
                                     <div className="flex-grow">
-                                        <div className="flex items-center gap-3 mb-2">
+                                        <div className="flex items-center gap-3 mb-1">
                                             <h3 className="text-xl font-bold">{project.title}</h3>
                                             {project.featured && (
                                                 <span className="text-[10px] bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider">
@@ -331,6 +373,43 @@ export default function AdminPage() {
                                             placeholder="https://..."
                                             className="bg-white/5 border-white/10 text-white"
                                         />
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Project Image / Screenshot</label>
+                                        <div className="relative">
+                                            {imagePreview ? (
+                                                <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/10 bg-slate-800 group">
+                                                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setImagePreview(null)
+                                                            setImageFile(null)
+                                                            setImageUrl("")
+                                                        }}
+                                                        className="absolute top-2 right-2 p-2 bg-black/60 backdrop-blur-md rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    >
+                                                        <X className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <label className="flex flex-col items-center justify-center aspect-video w-full rounded-2xl border-2 border-dashed border-white/10 bg-white/5 hover:bg-white/10 transition-colors cursor-pointer group">
+                                                    <div className="flex flex-col items-center gap-2">
+                                                        <div className="p-3 rounded-xl bg-white/5 text-slate-400 group-hover:text-purple-400 group-hover:bg-purple-500/10 transition-all">
+                                                            <Plus className="w-6 h-6" />
+                                                        </div>
+                                                        <span className="text-sm text-slate-500 font-medium">Click to upload screenshot</span>
+                                                    </div>
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={handleImageChange}
+                                                        className="hidden"
+                                                    />
+                                                </label>
+                                            )}
+                                        </div>
                                     </div>
 
                                     <div className="flex items-center gap-3 py-2">

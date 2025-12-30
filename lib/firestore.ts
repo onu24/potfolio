@@ -20,15 +20,63 @@ export interface Project {
     link: string
     category: string
     featured: boolean
+    imageUrl: string
     createdAt?: any
 }
 
 const COLLECTION_NAME = "projects"
 
+const MIGRATION_PROJECTS: Omit<Project, "id" | "createdAt">[] = [
+    {
+        title: "Learnsphere – e-commerce learning platform",
+        description: "A clean e-commerce interface for browsing and purchasing courses. Built with modern full-stack tools.",
+        techStack: ["Next.js", "Firebase", "Tailwind CSS", "Vercel", "Google AI Studio", "Antigravity"],
+        link: "https://learnsphere-v1.vercel.app",
+        category: "SaaS",
+        featured: true,
+        imageUrl: "",
+    },
+    {
+        title: "Personal Portfolio – Full Stack Developer",
+        description: "A minimal, dark-themed portfolio showcasing my work and skills. Built with Next.js and Tailwind CSS.",
+        techStack: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Vercel", "Firebase"],
+        link: "https://potfolio-pearl.vercel.app",
+        category: "Portfolio",
+        featured: true,
+        imageUrl: "",
+    },
+]
+
+export const migrateProjects = async () => {
+    try {
+        const q = collection(db, COLLECTION_NAME)
+        const snapshot = await getDocs(q)
+        if (snapshot.empty) {
+            console.log("Migrating initial projects...")
+            for (const project of MIGRATION_PROJECTS) {
+                await addProject(project)
+            }
+        }
+    } catch (error) {
+        console.error("Migration failed: ", error)
+    }
+}
+
 export const getProjects = async (): Promise<Project[]> => {
     try {
         const q = query(collection(db, COLLECTION_NAME), orderBy("createdAt", "desc"))
         const querySnapshot = await getDocs(q)
+
+        if (querySnapshot.empty) {
+            await migrateProjects()
+            // Re-fetch after migration
+            const newSnapshot = await getDocs(q)
+            return newSnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            })) as Project[]
+        }
+
         return querySnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
