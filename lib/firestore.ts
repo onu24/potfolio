@@ -44,7 +44,7 @@ const MIGRATION_PROJECTS: Omit<Project, "id" | "createdAt">[] = [
         link: "https://learnsphere-v1.vercel.app",
         category: "SaaS",
         featured: true,
-        imageUrl: "",
+        imageUrl: "/projects/learnsphere.jpg",
     },
     {
         title: "Personal Portfolio – Full Stack Developer",
