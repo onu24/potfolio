@@ -115,4 +115,3 @@ export function AdminSidebar({ onLogout }: SidebarProps) {
         </>
     )
 }
-"
