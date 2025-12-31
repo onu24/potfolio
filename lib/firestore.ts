@@ -52,7 +52,7 @@ const MIGRATION_IMAGES: Omit<ProjectImage, "id" | "createdAt">[] = [
         alt: "Learnsphere Project Screenshot"
     },
     {
-        url: "/projects/portfolio.jpg",
+        url: "https://iili.io/fXGDISV.jpg",
         alt: "Portfolio Project Screenshot"
     }
 ]
@@ -134,7 +134,7 @@ export const resetAndSeedProjects = async () => {
             if (project.title.includes("Learnsphere")) {
                 targetImageUrl = "/projects/learnsphere.jpg"
             } else if (project.title.includes("Portfolio")) {
-                targetImageUrl = "/projects/portfolio.jpg"
+                targetImageUrl = "https://iili.io/fXGDISV.jpg"
             }
 
             if (targetImageUrl && imageIds[targetImageUrl]) {
