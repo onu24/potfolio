@@ -124,10 +124,13 @@
   /* Adding smooth scroll behavior */
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   body {
     /* using semantic bg-background and adding space to prevent utility clash */
     @apply bg-background text-foreground antialiased selection:bg-purple-500/30;
+    overflow-x: hidden;
+    width: 100%;
   }
 }

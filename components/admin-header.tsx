@@ -13,7 +13,7 @@ export function AdminHeader() {
     }
 
     return (
-        <header className="sticky top-0 z-30 w-full bg-slate-950/80 backdrop-blur-md border-b border-white/5 ml-0 md:ml-64 transition-all duration-300">
+        <header className="sticky top-0 z-30 w-full bg-slate-950/80 backdrop-blur-md border-b border-white/5 transition-all duration-300">
             <div className="h-12 px-3 md:px-4 flex items-center justify-between">
                 <div className="flex items-center gap-4 ml-10 md:ml-0">
                     <h1 className="text-sm font-semibold text-slate-200">
