@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Plus, Pencil, Trash2, LogOut, ExternalLink, ShieldCheck, Loader2, Image as ImageIcon, X, Inbox, ArrowUpRight } from "lucide-react"
+import { Plus, Pencil, Trash2, LogOut, ExternalLink, ShieldCheck, Loader2, Image as ImageIcon, X, Inbox } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
-import { getProjects, addProject, updateProject, deleteProject, type Project, type Milestone } from "@/lib/firestore"
+import { getProjects, addProject, updateProject, deleteProject, type Project } from "@/lib/firestore"
 
 export default function AdminPage() {
     const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -27,7 +27,6 @@ export default function AdminPage() {
     const [featured, setFeatured] = useState(false)
     const [imageUrl, setImageUrl] = useState("")
     const [imagePreview, setImagePreview] = useState<string | null>(null)
-    const [milestones, setMilestones] = useState<Project["milestones"]>([])
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     useEffect(() => {
@@ -52,19 +51,13 @@ export default function AdminPage() {
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault()
-        const expectedPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123"
-
-        console.log("Login attempt - Input:", password)
-        console.log("Expected Password:", expectedPassword)
-
-        if (password === expectedPassword) {
+        if (password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
             setIsAuthenticated(true)
             localStorage.setItem("admin_auth", "true")
             toast.success("Welcome back, Admin!")
             fetchProjects()
         } else {
             toast.error("Invalid password")
-            console.error("Auth Failed: Passwords do not match")
         }
     }
 
@@ -86,7 +79,6 @@ export default function AdminPage() {
             setFeatured(project.featured)
             setImageUrl(project.imageUrl || "")
             setImagePreview(project.imageUrl || null)
-            setMilestones(project.milestones || [])
         } else {
             setEditingProject(null)
             setTitle("")
@@ -97,7 +89,6 @@ export default function AdminPage() {
             setFeatured(false)
             setImageUrl("")
             setImagePreview(null)
-            setMilestones([])
         }
         setIsFormOpen(true)
     }
@@ -120,7 +111,6 @@ export default function AdminPage() {
                 category,
                 featured,
                 imageUrl,
-                milestones,
             }
 
             console.log("Admin: Submitting project data to Firestore:", projectData)
@@ -152,37 +142,6 @@ export default function AdminPage() {
         } catch (error) {
             toast.error("Failed to delete project")
         }
-    }
-
-    const addMilestone = () => {
-        const newMilestone = {
-            id: Math.random().toString(36).substr(2, 9),
-            year: new Date().getFullYear().toString(),
-            title: "",
-            description: ""
-        }
-        setMilestones([...(milestones || []), newMilestone])
-    }
-
-    const updateMilestone = (id: string, field: keyof Milestone, value: string) => {
-        setMilestones(
-            milestones?.map((m) => (m.id === id ? { ...m, [field]: value } : m))
-        )
-    }
-
-    const removeMilestone = (id: string) => {
-        setMilestones(milestones?.filter((m) => m.id !== id))
-    }
-
-    const moveMilestone = (index: number, direction: 'up' | 'down') => {
-        if (!milestones) return
-        const newMilestones = [...milestones]
-        if (direction === 'up' && index > 0) {
-            [newMilestones[index], newMilestones[index - 1]] = [newMilestones[index - 1], newMilestones[index]]
-        } else if (direction === 'down' && index < milestones.length - 1) {
-            [newMilestones[index], newMilestones[index + 1]] = [newMilestones[index + 1], newMilestones[index]]
-        }
-        setMilestones(newMilestones)
     }
 
     if (!isAuthenticated) {
@@ -297,7 +256,7 @@ export default function AdminPage() {
                                             variant="outline"
                                             size="icon"
                                             onClick={() => openForm(project)}
-                                            className="border-white/10 hover:bg-white/5 h-10 w-10 ring-0 outline-0"
+                                            className="border-white/10 hover:bg-white/5 h-10 w-10"
                                         >
                                             <Pencil className="w-4 h-4 text-blue-400" />
                                         </Button>
@@ -305,7 +264,7 @@ export default function AdminPage() {
                                             variant="outline"
                                             size="icon"
                                             onClick={() => handleDelete(project.id!)}
-                                            className="border-white/10 hover:bg-white/5 h-10 w-10 text-red-400 ring-0 outline-0"
+                                            className="border-white/10 hover:bg-white/5 h-10 w-10 text-red-400"
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </Button>
@@ -314,7 +273,7 @@ export default function AdminPage() {
                                                 asChild
                                                 variant="outline"
                                                 size="icon"
-                                                className="border-white/10 hover:bg-white/5 h-10 w-10 ring-0 outline-0"
+                                                className="border-white/10 hover:bg-white/5 h-10 w-10"
                                             >
                                                 <a href={project.link} target="_blank" rel="noopener noreferrer">
                                                     <ExternalLink className="w-4 h-4 text-slate-400" />
@@ -336,18 +295,18 @@ export default function AdminPage() {
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="bg-slate-900 border border-white/10 w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+                            className="bg-slate-900 border border-white/10 w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
                         >
-                            <div className="p-8 border-b border-white/10 flex justify-between items-center bg-slate-950/20">
+                            <div className="p-8 border-b border-white/10 flex justify-between items-center">
                                 <h2 className="text-2xl font-bold">{editingProject ? "Edit Project" : "Add New Project"}</h2>
                                 <Button variant="ghost" onClick={() => setIsFormOpen(false)} className="text-slate-400 hover:text-white ring-0 outline-0">
-                                    <X className="w-5 h-5" />
+                                    Cancel
                                 </Button>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="p-8 space-y-8 overflow-y-auto">
-                                <div className="space-y-6">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <form onSubmit={handleSubmit} className="p-8 space-y-6 overflow-y-auto">
+                                <div className="space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="space-y-2">
                                             <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Title*</label>
                                             <Input
@@ -355,7 +314,7 @@ export default function AdminPage() {
                                                 value={title}
                                                 onChange={(e) => setTitle(e.target.value)}
                                                 placeholder="Learnsphere"
-                                                className="bg-white/5 border-white/10 text-white h-12"
+                                                className="bg-white/5 border-white/10 text-white"
                                             />
                                         </div>
                                         <div className="space-y-2">
@@ -365,7 +324,7 @@ export default function AdminPage() {
                                                 value={category}
                                                 onChange={(e) => setCategory(e.target.value)}
                                                 placeholder="SaaS / Personal"
-                                                className="bg-white/5 border-white/10 text-white h-12"
+                                                className="bg-white/5 border-white/10 text-white"
                                             />
                                         </div>
                                     </div>
@@ -377,7 +336,7 @@ export default function AdminPage() {
                                             value={description}
                                             onChange={(e) => setDescription(e.target.value)}
                                             placeholder="Project overview..."
-                                            className="bg-white/5 border-white/10 text-white min-h-[100px] py-4"
+                                            className="bg-white/5 border-white/10 text-white min-h-[100px]"
                                         />
                                     </div>
 
@@ -387,7 +346,7 @@ export default function AdminPage() {
                                             value={techStack}
                                             onChange={(e) => setTechStack(e.target.value)}
                                             placeholder="Next.js, Tailwind, Firebase"
-                                            className="bg-white/5 border-white/10 text-white h-12"
+                                            className="bg-white/5 border-white/10 text-white"
                                         />
                                     </div>
 
@@ -397,148 +356,73 @@ export default function AdminPage() {
                                             value={link}
                                             onChange={(e) => setLink(e.target.value)}
                                             placeholder="https://..."
-                                            className="bg-white/5 border-white/10 text-white h-12"
+                                            className="bg-white/5 border-white/10 text-white"
                                         />
                                     </div>
 
                                     <div className="space-y-4">
-                                        <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Project Image URL</label>
-                                        <Input
-                                            value={imageUrl}
-                                            onChange={(e) => {
-                                                setImageUrl(e.target.value)
-                                                setImagePreview(e.target.value)
-                                            }}
-                                            placeholder="https://example.com/image.jpg"
-                                            className="bg-white/5 border-white/10 text-white h-12"
-                                        />
+                                        <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Project Image / Screenshot</label>
+
+                                        <div className="space-y-2">
+                                            <Input
+                                                value={imageUrl}
+                                                onChange={(e) => {
+                                                    setImageUrl(e.target.value)
+                                                    setImagePreview(e.target.value)
+                                                }}
+                                                placeholder="https://example.com/image.jpg"
+                                                className="bg-white/5 border-white/10 text-white"
+                                            />
+                                            <div className="flex justify-between items-center px-1">
+                                                <p className="text-[10px] text-slate-500 uppercase tracking-widest font-medium">Paste a direct image URL (e.g., from Imgur, Cloudinary, etc.)</p>
+                                                {imageUrl && (
+                                                    <span className="text-[9px] text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter">
+                                                        URL Detected
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+
                                         {imagePreview && (
-                                            <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/10 bg-slate-800">
+                                            <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/10 bg-slate-800 group">
                                                 <img
                                                     src={imagePreview}
                                                     alt="Preview"
                                                     className="w-full h-full object-cover"
                                                     onError={() => setImagePreview(null)}
                                                 />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setImagePreview(null)
+                                                        setImageUrl("")
+                                                    }}
+                                                    className="absolute top-2 right-2 p-2 bg-black/60 backdrop-blur-md rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                                >
+                                                    <X className="w-4 h-4" />
+                                                </button>
                                             </div>
                                         )}
                                     </div>
 
-                                    <div className="flex items-center gap-3 py-2 border-b border-white/5 pb-8">
+                                    <div className="flex items-center gap-3 py-2">
                                         <input
                                             type="checkbox"
                                             id="featured"
                                             checked={featured}
                                             onChange={(e) => setFeatured(e.target.checked)}
-                                            className="w-5 h-5 rounded bg-white/5 border-white/10 text-purple-600 focus:ring-purple-500"
+                                            className="w-4 h-4 rounded bg-white/5 border-white/10 text-purple-600 focus:ring-purple-500"
                                         />
-                                        <label htmlFor="featured" className="text-sm text-slate-400 cursor-pointer font-medium">
+                                        <label htmlFor="featured" className="text-sm text-slate-400 cursor-pointer">
                                             Mark as Featured Project
                                         </label>
-                                    </div>
-
-                                    {/* Milestones Section */}
-                                    <div className="space-y-6">
-                                        <div className="flex items-center justify-between">
-                                            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                                                Project Milestones
-                                                <span className="text-[10px] bg-white/5 text-slate-500 px-2 py-0.5 rounded-full font-bold">{milestones?.length || 0}</span>
-                                            </h3>
-                                            <Button
-                                                type="button"
-                                                onClick={addMilestone}
-                                                size="sm"
-                                                variant="outline"
-                                                className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 h-8"
-                                            >
-                                                <Plus className="w-3.5 h-3.5 mr-1" /> Add Milestone
-                                            </Button>
-                                        </div>
-
-                                        <div className="space-y-4">
-                                            {milestones?.map((milestone, idx) => (
-                                                <motion.div
-                                                    key={milestone.id}
-                                                    initial={{ opacity: 0, x: -10 }}
-                                                    animate={{ opacity: 1, x: 0 }}
-                                                    className="bg-white/[0.03] border border-white/10 rounded-2xl p-5 relative group"
-                                                >
-                                                    <div className="absolute -left-3 top-1/2 -translate-y-1/2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <button
-                                                            type="button"
-                                                            disabled={idx === 0}
-                                                            onClick={() => moveMilestone(idx, 'up')}
-                                                            className="p-1 bg-slate-800 border border-white/10 rounded-full text-slate-400 hover:text-white disabled:opacity-30"
-                                                        >
-                                                            <ArrowUpRight className="w-3 h-3 -rotate-45" />
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            disabled={idx === milestones.length - 1}
-                                                            onClick={() => moveMilestone(idx, 'down')}
-                                                            className="p-1 bg-slate-800 border border-white/10 rounded-full text-slate-400 hover:text-white disabled:opacity-30"
-                                                        >
-                                                            <ArrowUpRight className="w-3 h-3 rotate-[135deg]" />
-                                                        </button>
-                                                    </div>
-
-                                                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                                                        <div className="sm:col-span-1">
-                                                            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1 block">Year</label>
-                                                            <Input
-                                                                value={milestone.year}
-                                                                onChange={(e) => updateMilestone(milestone.id, 'year', e.target.value)}
-                                                                placeholder="2025"
-                                                                className="bg-white/5 border-white/10 h-10"
-                                                            />
-                                                        </div>
-                                                        <div className="sm:col-span-2">
-                                                            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1 block">Title</label>
-                                                            <Input
-                                                                value={milestone.title}
-                                                                onChange={(e) => updateMilestone(milestone.id, 'title', e.target.value)}
-                                                                placeholder="e.g. Beta Launch"
-                                                                className="bg-white/5 border-white/10 h-10"
-                                                            />
-                                                        </div>
-                                                        <div className="flex items-end justify-end">
-                                                            <Button
-                                                                type="button"
-                                                                variant="ghost"
-                                                                onClick={() => removeMilestone(milestone.id)}
-                                                                className="text-red-400 hover:bg-red-500/10 h-10 w-10 p-0 ring-0 outline-0"
-                                                            >
-                                                                <Trash2 className="w-4 h-4" />
-                                                            </Button>
-                                                        </div>
-                                                        <div className="sm:col-span-4 space-y-1">
-                                                            <div className="flex justify-between">
-                                                                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block">Description</label>
-                                                                <span className="text-[10px] text-slate-600">{milestone.description.length} chars</span>
-                                                            </div>
-                                                            <Textarea
-                                                                value={milestone.description}
-                                                                onChange={(e) => updateMilestone(milestone.id, 'description', e.target.value)}
-                                                                placeholder="Add milestone details here..."
-                                                                className="bg-white/5 border-white/10 min-h-[60px] text-sm"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </motion.div>
-                                            ))}
-                                            {(!milestones || milestones.length === 0) && (
-                                                <div className="text-center py-6 border border-dashed border-white/5 rounded-2xl">
-                                                    <p className="text-slate-500 text-xs italic">No milestones added yet. Add some to build a timeline!</p>
-                                                </div>
-                                            )}
-                                        </div>
                                     </div>
                                 </div>
 
                                 <Button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="w-full h-14 bg-purple-600 hover:bg-purple-700 text-white text-lg font-bold transition-all disabled:opacity-50 shadow-lg shadow-purple-500/20"
+                                    className="w-full h-14 bg-purple-600 hover:bg-purple-700 text-white text-lg font-bold transition-all disabled:opacity-50"
                                 >
                                     {isSubmitting ? (
                                         <Loader2 className="w-5 h-5 animate-spin mr-2" />

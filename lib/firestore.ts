@@ -12,14 +12,6 @@ import {
 } from "firebase/firestore"
 import { db } from "./firebase"
 
-export interface Milestone {
-    id: string
-    year: string
-    title: string
-    description: string
-    icon?: string
-}
-
 export interface Project {
     id?: string
     title: string
@@ -29,7 +21,6 @@ export interface Project {
     category: string
     featured: boolean
     imageUrl: string
-    milestones?: Milestone[]
     createdAt?: any
 }
 
@@ -63,10 +54,6 @@ const MIGRATION_PROJECTS: Omit<Project, "id" | "createdAt">[] = [
         category: "Portfolio",
         featured: true,
         imageUrl: "",
-        milestones: [
-            { id: "1", year: "2023", title: "Inception", description: "Design and concept phase." },
-            { id: "2", year: "2024", title: "Launch", description: "First public deployment." }
-        ]
     },
 ]
 
