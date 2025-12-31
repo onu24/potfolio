@@ -68,9 +68,9 @@ export function AdminSidebar({ onLogout }: SidebarProps) {
                     isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
                 )}
             >
-                <div className="flex flex-col h-full p-4">
+                <div className="flex flex-col h-full p-3">
                     {/* Logo */}
-                    <div className="mb-6 flex items-center gap-3 px-2">
+                    <div className="mb-4 flex items-center gap-3 px-2">
                         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center font-bold text-white">
                             M
                         </div>
@@ -101,7 +101,7 @@ export function AdminSidebar({ onLogout }: SidebarProps) {
                     </nav>
 
                     {/* Footer Actions */}
-                    <div className="pt-4 border-t border-white/10 space-y-2">
+                    <div className="pt-3 border-t border-white/10 space-y-2">
                         <button
                             onClick={onLogout}
                             className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 group"

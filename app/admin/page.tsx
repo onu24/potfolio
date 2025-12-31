@@ -21,7 +21,8 @@ export default function AdminDashboard() {
     const [stats, setStats] = useState({
         totalProjects: 0,
         totalMessages: 0,
-        unreadMessages: 0
+        unreadMessages: 0,
+        featuredProjects: 0
     })
     const [recentProjects, setRecentProjects] = useState<Project[]>([])
     const [loading, setLoading] = useState(true)
@@ -38,7 +39,8 @@ export default function AdminDashboard() {
                 setStats({
                     totalProjects: projects.length,
                     totalMessages: messages.length,
-                    unreadMessages: messages.filter(m => !m.read).length
+                    unreadMessages: messages.filter(m => !m.read).length,
+                    featuredProjects: projects.filter(p => p.featured).length
                 })
 
                 setRecentProjects(projects.slice(0, 3))
@@ -84,61 +86,69 @@ export default function AdminDashboard() {
             color: "text-green-400",
             bg: "bg-green-500/10",
             link: "/admin/messages"
+        },
+        {
+            title: "Featured",
+            value: stats.featuredProjects,
+            icon: TrendingUp,
+            color: "text-orange-400",
+            bg: "bg-orange-500/10",
+            link: "/admin/projects"
         }
     ]
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                 {cards.map((card, i) => (
                     <motion.div
                         key={card.title}
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="bg-white/[0.02] border border-white/5 p-4 rounded-2xl hover:bg-white/[0.04] transition-all group"
+                        className="bg-white/[0.02] border border-white/5 p-3 rounded-xl hover:bg-white/[0.04] transition-all group"
                     >
-                        <div className="flex justify-between items-start mb-4">
-                            <div className={cn("p-2 rounded-xl", card.bg, card.color)}>
-                                <card.icon className="w-5 h-5" />
+                        <div className="flex justify-between items-start mb-3">
+                            <div className={cn("p-1.5 rounded-lg", card.bg, card.color)}>
+                                <card.icon className="w-4 h-4" />
                             </div>
                             <Link href={card.link} className="text-slate-500 hover:text-white transition-colors">
-                                <ArrowUpRight className="w-4 h-4" />
+                                <ArrowUpRight className="w-3.5 h-3.5" />
                             </Link>
                         </div>
-                        <div className="space-y-1">
-                            <p className="text-sm font-medium text-slate-400">{card.title}</p>
-                            <p className="text-3xl font-bold text-white">{card.value}</p>
+                        <div className="space-y-0.5">
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{card.title}</p>
+                            <p className="text-2xl font-bold text-white tracking-tight">{card.value}</p>
                         </div>
                     </motion.div>
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Recent Projects */}
-                <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6">
-                    <div className="flex items-center justify-between mb-6">
-                        <h3 className="text-lg font-bold flex items-center gap-2">
-                            <TrendingUp className="w-5 h-5 text-purple-500" /> Recent Projects
+                <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-base font-bold flex items-center gap-2">
+                            <TrendingUp className="w-4 h-4 text-purple-500" /> Recent Projects
                         </h3>
-                        <Button asChild variant="ghost" size="sm" className="text-xs text-slate-400 hover:text-white">
+                        <Button asChild variant="ghost" size="sm" className="h-7 text-[10px] text-slate-400 hover:text-white px-2">
                             <Link href="/admin/projects">View All</Link>
                         </Button>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-2">
                         {recentProjects.length === 0 ? (
                             <p className="text-slate-500 text-sm italic">No projects added yet.</p>
                         ) : (
                             recentProjects.map((project) => (
-                                <div key={project.id} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-lg bg-slate-800 overflow-hidden flex-shrink-0">
+                                <div key={project.id} className="flex items-center justify-between p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-8 h-8 rounded-lg bg-slate-800 overflow-hidden flex-shrink-0">
                                             {project.imageUrl ? (
                                                 <img src={project.imageUrl} alt="" className="w-full h-full object-cover" />
                                             ) : (
-                                                <div className="w-full h-full flex items-center justify-center bg-purple-500/10 text-purple-400 font-bold text-xs uppercase">
+                                                <div className="w-full h-full flex items-center justify-center bg-purple-500/10 text-purple-400 font-bold text-[10px] uppercase">
                                                     {project.title[0]}
                                                 </div>
                                             )}
@@ -158,28 +168,28 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* Quick Actions & Tips */}
-                <div className="space-y-6">
-                    <div className="bg-gradient-to-br from-purple-600/20 to-blue-600/20 border border-purple-500/20 rounded-2xl p-6">
-                        <h3 className="text-lg font-bold mb-4">Quick Start</h3>
-                        <div className="grid grid-cols-2 gap-3">
-                            <Button asChild className="bg-purple-600 hover:bg-purple-700 text-white h-10 rounded-xl px-4 font-bold transition-all shadow-lg shadow-purple-500/20">
+                <div className="space-y-4">
+                    <div className="bg-gradient-to-br from-purple-600/20 to-blue-600/20 border border-purple-500/20 rounded-2xl p-4">
+                        <h3 className="text-base font-bold mb-3">Quick Start</h3>
+                        <div className="grid grid-cols-2 gap-2">
+                            <Button asChild className="bg-purple-600 hover:bg-purple-700 text-white h-9 rounded-xl px-4 text-xs font-bold transition-all shadow-lg shadow-purple-500/20">
                                 <Link href="/admin/projects">
-                                    <Plus className="w-4 h-4 mr-2" /> New Project
+                                    <Plus className="w-3.5 h-3.5 mr-1.5" /> New Project
                                 </Link>
                             </Button>
-                            <Button asChild variant="outline" className="border-white/10 hover:bg-white/5 text-white h-10 rounded-xl">
+                            <Button asChild variant="outline" className="border-white/10 hover:bg-white/5 text-white h-9 rounded-xl text-xs">
                                 <Link href="/admin/messages">
-                                    <MessageSquare className="w-4 h-4 mr-2" /> View Inbox
+                                    <MessageSquare className="w-3.5 h-3.5 mr-1.5" /> View Inbox
                                 </Link>
                             </Button>
                         </div>
                     </div>
 
-                    <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6">
-                        <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-                            <Clock className="w-5 h-5 text-blue-400" /> Admin Tips
+                    <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4">
+                        <h3 className="text-base font-bold mb-3 flex items-center gap-2">
+                            <Clock className="w-4 h-4 text-blue-400" /> Admin Tips
                         </h3>
-                        <ul className="space-y-3">
+                        <ul className="space-y-2">
                             <li className="text-sm text-slate-400 flex gap-3">
                                 <span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-1.5 flex-shrink-0" />
                                 Use direct image URLs for project thumbnails for best performance.

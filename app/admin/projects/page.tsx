@@ -125,19 +125,19 @@ export default function ProjectsPage() {
     const filledProjects = filteredProjects
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                 <div className="relative flex-1 max-w-md">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
                     <Input
-                        placeholder="Search projects by name, tech, or category..."
+                        placeholder="Search projects..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10 bg-white/5 border-white/10 text-sm h-10 rounded-xl focus:ring-purple-500/50"
+                        className="pl-9 bg-white/5 border-white/10 text-xs h-9 rounded-xl focus:ring-purple-500/50"
                     />
                 </div>
-                <Button onClick={() => openForm()} className="bg-purple-600 hover:bg-purple-700 text-white h-10 rounded-xl px-6 font-bold transition-all shadow-lg shadow-purple-500/20">
-                    <Plus className="w-4 h-4 mr-2" /> New Project
+                <Button onClick={() => openForm()} className="bg-purple-600 hover:bg-purple-700 text-white h-9 rounded-xl px-4 text-xs font-bold transition-all shadow-lg shadow-purple-500/20">
+                    <Plus className="w-3.5 h-3.5 mr-1.5" /> New Project
                 </Button>
             </div>
 
@@ -146,9 +146,9 @@ export default function ProjectsPage() {
                     <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                     {filledProjects.length === 0 ? (
-                        <div className="col-span-full text-center py-24 border border-dashed border-white/10 rounded-3xl bg-white/[0.02]">
+                        <div className="col-span-full text-center py-12 border border-dashed border-white/10 rounded-2xl bg-white/[0.02]">
                             <p className="text-slate-500">No projects found.</p>
                         </div>
                     ) : (
@@ -159,51 +159,51 @@ export default function ProjectsPage() {
                                 animate={{ opacity: 1, y: 0 }}
                                 className="group bg-slate-900/40 border border-white/10 rounded-2xl overflow-hidden hover:border-purple-500/20 transition-all duration-300 flex flex-col"
                             >
-                                <div className="h-40 relative bg-slate-800 overflow-hidden">
+                                <div className="h-32 relative bg-slate-800 overflow-hidden">
                                     {project.imageUrl ? (
                                         <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                                     ) : (
                                         <div className="w-full h-full bg-gradient-to-br from-purple-900/20 to-slate-900 flex items-center justify-center">
-                                            <ImageIcon className="w-8 h-8 text-purple-500/30" />
+                                            <ImageIcon className="w-6 h-6 text-purple-500/30" />
                                         </div>
                                     )}
                                     {project.featured && (
-                                        <div className="absolute top-3 right-3 px-2 py-0.5 bg-purple-500 text-white text-[10px] font-bold uppercase tracking-wider rounded-full shadow-lg">
+                                        <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-purple-500 text-white text-[8px] font-bold uppercase tracking-wider rounded-md shadow-lg">
                                             Featured
                                         </div>
                                     )}
                                 </div>
 
-                                <div className="p-4 flex-1 flex flex-col">
-                                    <div className="flex justify-between items-start mb-2">
+                                <div className="p-3 flex-1 flex flex-col">
+                                    <div className="flex justify-between items-start mb-1.5">
                                         <div>
-                                            <p className="text-[10px] uppercase tracking-widest text-purple-400 font-bold mb-1">{project.category}</p>
-                                            <h3 className="text-lg font-bold text-white line-clamp-1">{project.title}</h3>
+                                            <p className="text-[8px] uppercase tracking-widest text-purple-400 font-bold mb-0.5">{project.category}</p>
+                                            <h3 className="text-sm font-bold text-white line-clamp-1">{project.title}</h3>
                                         </div>
                                     </div>
 
-                                    <p className="text-slate-400 text-xs line-clamp-2 mb-4 flex-1 leading-relaxed">{project.description}</p>
+                                    <p className="text-slate-400 text-[11px] line-clamp-2 mb-3 flex-1 leading-normal">{project.description}</p>
 
-                                    <div className="flex items-center gap-2 pt-3 border-t border-white/5">
+                                    <div className="flex items-center gap-2 pt-2 border-t border-white/5">
                                         <Button
                                             variant="ghost"
                                             size="sm"
                                             onClick={() => openForm(project)}
-                                            className="h-8 w-8 p-0 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg"
+                                            className="h-7 w-7 p-0 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg"
                                         >
-                                            <Pencil className="w-4 h-4" />
+                                            <Pencil className="w-3.5 h-3.5" />
                                         </Button>
                                         <Button
                                             variant="ghost"
                                             size="sm"
                                             onClick={() => project.id && handleDelete(project.id)}
-                                            className="h-8 w-8 p-0 text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg"
+                                            className="h-7 w-7 p-0 text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg"
                                         >
-                                            <Trash2 className="w-4 h-4" />
+                                            <Trash2 className="w-3.5 h-3.5" />
                                         </Button>
                                         <div className="ml-auto">
-                                            <a href={project.link} target="_blank" rel="noopener noreferrer" className="p-2 text-slate-500 hover:text-purple-400 transition-colors">
-                                                <ExternalLink className="w-4 h-4" />
+                                            <a href={project.link} target="_blank" rel="noopener noreferrer" className="p-1.5 text-slate-500 hover:text-purple-400 transition-colors">
+                                                <ExternalLink className="w-3.5 h-3.5" />
                                             </a>
                                         </div>
                                     </div>
@@ -231,49 +231,49 @@ export default function ProjectsPage() {
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
                             className="bg-slate-950 border border-white/10 w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]"
                         >
-                            <div className="p-5 border-b border-white/10 flex justify-between items-center bg-slate-900/50">
-                                <h2 className="text-lg font-bold">{editingProject ? "Edit Project" : "Add New Project"}</h2>
-                                <Button variant="ghost" size="icon" onClick={() => setIsFormOpen(false)} className="text-slate-400 hover:text-white hover:bg-white/5 rounded-full h-8 w-8">
-                                    <X className="w-4 h-4" />
+                            <div className="p-4 border-b border-white/10 flex justify-between items-center bg-slate-900/50">
+                                <h2 className="text-base font-bold">{editingProject ? "Edit Project" : "Add New Project"}</h2>
+                                <Button variant="ghost" size="icon" onClick={() => setIsFormOpen(false)} className="text-slate-400 hover:text-white hover:bg-white/5 rounded-full h-7 w-7">
+                                    <X className="w-3.5 h-3.5" />
                                 </Button>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-5 space-y-5">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                    <div className="space-y-1.5">
+                            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-1">
                                         <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Title</label>
-                                        <Input required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Project Name" className="bg-white/5 border-white/10 h-10" />
+                                        <Input required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Project Name" className="bg-white/5 border-white/10 h-10 text-sm" />
                                     </div>
-                                    <div className="space-y-1.5">
+                                    <div className="space-y-1">
                                         <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Category</label>
-                                        <Input required value={category} onChange={(e) => setCategory(e.target.value)} placeholder="SaaS, Portfolio..." className="bg-white/5 border-white/10 h-10" />
+                                        <Input required value={category} onChange={(e) => setCategory(e.target.value)} placeholder="SaaS, Portfolio..." className="bg-white/5 border-white/10 h-10 text-sm" />
                                     </div>
                                 </div>
 
-                                <div className="space-y-1.5">
+                                <div className="space-y-1">
                                     <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Description</label>
-                                    <Textarea required value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Describe your project..." className="bg-white/5 border-white/10 min-h-[100px]" />
+                                    <Textarea required value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Describe your project..." className="bg-white/5 border-white/10 min-h-[80px] text-sm" />
                                 </div>
 
-                                <div className="space-y-1.5">
+                                <div className="space-y-1">
                                     <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Tech Stack</label>
-                                    <Input value={techStack} onChange={(e) => setTechStack(e.target.value)} placeholder="React, Next.js, Firebase..." className="bg-white/5 border-white/10 h-10" />
+                                    <Input value={techStack} onChange={(e) => setTechStack(e.target.value)} placeholder="React, Next.js..." className="bg-white/5 border-white/10 h-10 text-sm" />
                                 </div>
 
-                                <div className="space-y-1.5">
+                                <div className="space-y-1">
                                     <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500">External Link</label>
-                                    <Input value={link} onChange={(e) => setLink(e.target.value)} placeholder="https://..." className="bg-white/5 border-white/10 h-10" />
+                                    <Input value={link} onChange={(e) => setLink(e.target.value)} placeholder="https://..." className="bg-white/5 border-white/10 h-10 text-sm" />
                                 </div>
 
-                                <div className="p-4 rounded-xl bg-purple-900/10 border border-purple-500/20 space-y-3">
+                                <div className="p-3 rounded-xl bg-purple-900/10 border border-purple-500/20 space-y-2">
                                     <label className="text-[10px] font-bold uppercase tracking-widest text-purple-300">Project Image</label>
                                     <div className="flex gap-4 items-start">
-                                        <div className="flex-1 space-y-1.5">
-                                            <Input value={imageUrl} onChange={(e) => { setImageUrl(e.target.value); setImagePreview(e.target.value) }} placeholder="https://example.com/image.jpg" className="bg-slate-900 border-purple-500/30 h-10" />
+                                        <div className="flex-1 space-y-1">
+                                            <Input value={imageUrl} onChange={(e) => { setImageUrl(e.target.value); setImagePreview(e.target.value) }} placeholder="Image URL..." className="bg-slate-900 border-purple-500/30 h-10 text-sm" />
                                             <p className="text-[10px] text-slate-400">Enter a direct URL for the cover image.</p>
                                         </div>
                                         {imagePreview && (
-                                            <div className="w-20 h-14 rounded-lg bg-slate-800 overflow-hidden border border-white/10 flex-shrink-0">
+                                            <div className="w-16 h-11 rounded-lg bg-slate-800 overflow-hidden border border-white/10 flex-shrink-0">
                                                 <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" onError={() => setImagePreview(null)} />
                                             </div>
                                         )}
@@ -286,10 +286,10 @@ export default function ProjectsPage() {
                                 </div>
                             </form>
 
-                            <div className="p-5 border-t border-white/10 bg-slate-900/50 flex justify-end gap-3">
-                                <Button variant="ghost" onClick={() => setIsFormOpen(false)} className="text-slate-400 hover:text-white">Cancel</Button>
-                                <Button disabled={isSubmitting} onClick={handleSubmit} className="bg-purple-600 hover:bg-purple-700 text-white min-w-[120px]">
-                                    {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                            <div className="p-4 border-t border-white/10 bg-slate-900/50 flex justify-end gap-2">
+                                <Button variant="ghost" onClick={() => setIsFormOpen(false)} className="text-slate-400 hover:text-white h-9 text-sm">Cancel</Button>
+                                <Button disabled={isSubmitting} onClick={handleSubmit} className="bg-purple-600 hover:bg-purple-700 text-white min-w-[100px] h-9 text-sm">
+                                    {isSubmitting ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-2" /> : null}
                                     {editingProject ? "Update" : "Save Project"}
                                 </Button>
                             </div>
