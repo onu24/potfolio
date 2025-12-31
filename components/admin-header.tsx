@@ -14,9 +14,9 @@ export function AdminHeader() {
 
     return (
         <header className="sticky top-0 z-30 w-full bg-slate-950/80 backdrop-blur-md border-b border-white/5 ml-0 md:ml-64 transition-all duration-300">
-            <div className="h-16 px-6 md:px-8 flex items-center justify-between">
+            <div className="h-14 px-4 md:px-6 flex items-center justify-between">
                 <div className="flex items-center gap-4 ml-10 md:ml-0">
-                    <h1 className="text-sm md:text-base font-semibold text-slate-200">
+                    <h1 className="text-sm font-semibold text-slate-200">
                         {getPageTitle(pathname)}
                     </h1>
                 </div>

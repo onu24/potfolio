@@ -92,7 +92,7 @@ export default function AdminLayout({
             <AdminSidebar onLogout={handleLogout} />
             <div className="ml-0 md:ml-64 min-h-screen flex flex-col transition-all duration-300">
                 <AdminHeader />
-                <main className="flex-1 p-4 md:p-8 overflow-x-hidden">
+                <main className="flex-1 p-4 md:p-6 overflow-x-hidden">
                     {children}
                 </main>
             </div>

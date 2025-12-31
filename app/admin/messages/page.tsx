@@ -113,11 +113,11 @@ export default function MessagesPage() {
                     <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
                 </div>
             ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full min-h-0">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-full min-h-0">
 
                     {/* Messages List Column */}
                     <div className={cn(
-                        "lg:col-span-1 flex flex-col gap-3 overflow-y-auto pr-2 custom-scrollbar",
+                        "lg:col-span-1 flex flex-col gap-2 overflow-y-auto pr-2 custom-scrollbar",
                         selectedMessage ? "hidden lg:flex" : "flex"
                     )}>
                         {filteredMessages.length === 0 ? (
@@ -130,7 +130,7 @@ export default function MessagesPage() {
                                     key={msg.id}
                                     onClick={() => setSelectedMessage(msg)}
                                     className={cn(
-                                        "p-4 rounded-2xl border cursor-pointer transition-all duration-200 relative group text-left",
+                                        "p-3 rounded-xl border cursor-pointer transition-all duration-200 relative group text-left",
                                         selectedMessage?.id === msg.id
                                             ? 'bg-purple-500/10 border-purple-500/50'
                                             : msg.read
@@ -180,14 +180,14 @@ export default function MessagesPage() {
                                     </div>
 
                                     {/* Message Header */}
-                                    <div className="p-6 md:p-8 border-b border-white/5 flex flex-col md:flex-row justify-between items-start gap-4">
+                                    <div className="p-4 md:p-6 border-b border-white/5 flex flex-col md:flex-row justify-between items-start gap-4">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 border border-white/10 flex items-center justify-center text-xl md:text-2xl font-bold text-white uppercase">
+                                            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 border border-white/10 flex items-center justify-center text-lg md:text-xl font-bold text-white uppercase">
                                                 {selectedMessage.name[0]}
                                             </div>
                                             <div>
-                                                <h2 className="text-xl md:text-2xl font-bold text-white">{selectedMessage.name}</h2>
-                                                <a href={`mailto:${selectedMessage.email}`} className="text-purple-400 hover:text-purple-300 text-sm flex items-center gap-2">
+                                                <h2 className="text-lg md:text-xl font-bold text-white">{selectedMessage.name}</h2>
+                                                <a href={`mailto:${selectedMessage.email}`} className="text-purple-400 hover:text-purple-300 text-xs flex items-center gap-2">
                                                     <Mail className="w-3 h-3" /> {selectedMessage.email}
                                                 </a>
                                             </div>
@@ -205,17 +205,17 @@ export default function MessagesPage() {
                                     </div>
 
                                     {/* Message Body */}
-                                    <div className="p-6 md:p-8 flex-1 overflow-y-auto space-y-6">
+                                    <div className="p-4 md:p-6 flex-1 overflow-y-auto space-y-4">
                                         <div className="flex items-center gap-2 text-xs text-slate-500">
                                             <Clock className="w-3 h-3" /> {formatDate(selectedMessage.createdAt)}
                                         </div>
-                                        <div className="bg-white/[0.03] border border-white/10 p-6 rounded-2xl text-slate-300 leading-relaxed whitespace-pre-wrap text-sm md:text-base">
+                                        <div className="bg-white/[0.03] border border-white/10 p-4 rounded-2xl text-slate-300 leading-relaxed whitespace-pre-wrap text-sm md:text-sm">
                                             {selectedMessage.message}
                                         </div>
                                     </div>
 
                                     {/* Reply Action */}
-                                    <div className="p-6 border-t border-white/5 bg-black/20">
+                                    <div className="p-4 border-t border-white/5 bg-black/20">
                                         <Button className="w-full bg-white text-black hover:bg-slate-200" asChild>
                                             <a href={`mailto:${selectedMessage.email}?subject=Reply: Portfolio Contact`}>Reply via Email</a>
                                         </Button>
