@@ -154,11 +154,32 @@ export function ProjectsSection() {
                       href={project.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-bold text-white/60 group-hover:text-white transition-colors duration-300 mt-auto"
+                      className="inline-flex items-center gap-2 text-sm font-bold text-white/60 group-hover:text-white transition-colors duration-300 mt-auto mb-8"
                     >
                       View project
                       <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
                     </a>
+                  )}
+
+                  {/* Milestones Timeline */}
+                  {project.milestones && project.milestones.length > 0 && (
+                    <div className="mt-4 pt-8 border-t border-white/5">
+                      <h4 className="text-[10px] font-bold tracking-[0.2em] uppercase text-slate-500 mb-6">Development Milestones</h4>
+                      <div className="space-y-6 relative before:absolute before:left-[7px] before:top-2 before:bottom-2 before:w-[1px] before:bg-white/10">
+                        {project.milestones.map((milestone) => (
+                          <div key={milestone.id} className="relative pl-8 group/milestone">
+                            <div className="absolute left-0 top-1.5 w-[15px] h-[15px] rounded-full bg-slate-950 border border-white/20 group-hover/milestone:border-purple-500/50 transition-colors duration-300 z-10 flex items-center justify-center">
+                              <div className="w-1.5 h-1.5 rounded-full bg-white/20 group-hover/milestone:bg-purple-500 transition-colors" />
+                            </div>
+                            <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4 mb-1">
+                              <span className="text-[11px] font-bold text-purple-400 uppercase tracking-wider">{milestone.year}</span>
+                              <h5 className="text-sm font-bold text-slate-200">{milestone.title}</h5>
+                            </div>
+                            <p className="text-xs text-slate-500 leading-relaxed">{milestone.description}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   )}
                 </div>
               </motion.div>

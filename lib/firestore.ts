@@ -8,10 +8,17 @@ import {
     query,
     orderBy,
     serverTimestamp,
-    type DocumentData,
-    writeBatch
+    type DocumentData
 } from "firebase/firestore"
 import { db } from "./firebase"
+
+export interface Milestone {
+    id: string
+    year: string
+    title: string
+    description: string
+    icon?: string
+}
 
 export interface Project {
     id?: string
@@ -22,14 +29,7 @@ export interface Project {
     category: string
     featured: boolean
     imageUrl: string
-    imageId?: string // Reference to project_images document
-    createdAt?: any
-}
-
-export interface ProjectImage {
-    id?: string
-    url: string
-    alt: string
+    milestones?: Milestone[]
     createdAt?: any
 }
 
@@ -44,18 +44,6 @@ export interface ContactMessage {
 
 const COLLECTION_NAME = "projects"
 const MESSAGES_COLLECTION = "messages"
-const IMAGES_COLLECTION_NAME = "project_images"
-
-const MIGRATION_IMAGES: Omit<ProjectImage, "id" | "createdAt">[] = [
-    {
-        url: "/projects/learnsphere.jpg",
-        alt: "Learnsphere Project Screenshot"
-    },
-    {
-        url: "https://iili.io/fXGDISV.jpg",
-        alt: "Portfolio Project Screenshot"
-    }
-]
 
 const MIGRATION_PROJECTS: Omit<Project, "id" | "createdAt">[] = [
     {
@@ -65,8 +53,7 @@ const MIGRATION_PROJECTS: Omit<Project, "id" | "createdAt">[] = [
         link: "https://learnsphere-v1.vercel.app",
         category: "SaaS",
         featured: true,
-        imageUrl: "", // Will be populated from reference
-        // imageId will be added dynamically during seed
+        imageUrl: "",
     },
     {
         title: "Personal Portfolio – Full Stack Developer",
@@ -75,7 +62,11 @@ const MIGRATION_PROJECTS: Omit<Project, "id" | "createdAt">[] = [
         link: "https://potfolio-pearl.vercel.app",
         category: "Portfolio",
         featured: true,
-        imageUrl: "", // Will be populated from reference
+        imageUrl: "",
+        milestones: [
+            { id: "1", year: "2023", title: "Inception", description: "Design and concept phase." },
+            { id: "2", year: "2024", title: "Launch", description: "First public deployment." }
+        ]
     },
 ]
 
@@ -91,66 +82,6 @@ export const migrateProjects = async () => {
         }
     } catch (error) {
         console.error("Migration failed: ", error)
-    }
-}
-
-export const resetAndSeedProjects = async () => {
-    try {
-        console.log("Resetting database...")
-
-        // Clear Projects
-        const qProjects = collection(db, COLLECTION_NAME)
-        const snapshotProjects = await getDocs(qProjects)
-        const deleteProjectsPromises = snapshotProjects.docs.map(doc => deleteProject(doc.id))
-
-        // Clear Images
-        const qImages = collection(db, IMAGES_COLLECTION_NAME)
-        const snapshotImages = await getDocs(qImages)
-        const deleteImagesPromises = snapshotImages.docs.map(doc => deleteDoc(doc.ref))
-
-        await Promise.all([...deleteProjectsPromises, ...deleteImagesPromises])
-
-        console.log("Old data cleared. Seeding new data...")
-
-        // 1. Seed Images and capture their IDs
-        const imageIds: Record<string, string> = {} // url -> firestore_id
-
-        for (const image of MIGRATION_IMAGES) {
-            const docRef = await addDoc(collection(db, IMAGES_COLLECTION_NAME), {
-                ...image,
-                createdAt: serverTimestamp(),
-            })
-            imageIds[image.url] = docRef.id
-            console.log(`Seeded image: ${image.url} -> ID: ${docRef.id}`)
-        }
-
-        // 2. Seed Projects with references
-        for (const project of MIGRATION_PROJECTS) {
-            // Determine which image belongs to which project
-            let targetImageId: string | undefined
-            let targetImageUrl = ""
-
-            // Simple logic to match project to image based on known data
-            if (project.title.includes("Learnsphere")) {
-                targetImageUrl = "/projects/learnsphere.jpg"
-            } else if (project.title.includes("Portfolio")) {
-                targetImageUrl = "https://iili.io/fXGDISV.jpg"
-            }
-
-            if (targetImageUrl && imageIds[targetImageUrl]) {
-                targetImageId = imageIds[targetImageUrl]
-            }
-
-            await addProject({
-                ...project,
-                imageUrl: targetImageUrl, // Denormalized for easy display
-                imageId: targetImageId,   // Reference for structure
-            })
-        }
-        console.log("Database seeded successfully.")
-    } catch (error) {
-        console.error("Reset failed: ", error)
-        throw error
     }
 }
 
