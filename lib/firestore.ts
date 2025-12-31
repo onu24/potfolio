@@ -4,6 +4,8 @@ import {
     updateDoc,
     deleteDoc,
     doc,
+    getDoc,
+    setDoc,
     getDocs,
     query,
     orderBy,
@@ -31,6 +33,11 @@ export interface ContactMessage {
     message: string
     read: boolean
     createdAt?: any
+}
+
+export interface ResumeSettings {
+    url: string
+    lastUpdated: any
 }
 
 const COLLECTION_NAME = "projects"
@@ -179,6 +186,38 @@ export const deleteMessage = async (id: string) => {
         await deleteDoc(docRef)
     } catch (error) {
         console.error("Error deleting message: ", error)
+        throw error
+    }
+}
+
+// Settings Operations (Resume)
+const SETTINGS_COLLECTION = "settings"
+const RESUME_DOC_ID = "resume"
+
+export const getResumeSettings = async (): Promise<ResumeSettings | null> => {
+    try {
+        const docRef = doc(db, SETTINGS_COLLECTION, RESUME_DOC_ID)
+        const docSnap = await getDoc(docRef)
+
+        if (docSnap.exists()) {
+            return docSnap.data() as ResumeSettings
+        }
+        return null
+    } catch (error) {
+        console.error("Error fetching resume settings: ", error)
+        return null
+    }
+}
+
+export const updateResumeSettings = async (url: string) => {
+    try {
+        const docRef = doc(db, SETTINGS_COLLECTION, RESUME_DOC_ID)
+        await setDoc(docRef, {
+            url,
+            lastUpdated: serverTimestamp(),
+        }, { merge: true })
+    } catch (error) {
+        console.error("Error updating resume settings: ", error)
         throw error
     }
 }

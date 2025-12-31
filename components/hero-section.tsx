@@ -1,8 +1,10 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Github, Linkedin } from "lucide-react"
+import { Github, Linkedin, Download, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react"
+import { getResumeSettings } from "@/lib/firestore"
 
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
@@ -10,6 +12,26 @@ const fadeUp = {
 }
 
 export function HeroSection() {
+  const [resumeUrl, setResumeUrl] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchResume = async () => {
+      try {
+        const res = await fetch("/api/resume")
+        if (res.ok) {
+          const settings = await res.json()
+          if (settings?.url) setResumeUrl(settings.url)
+        }
+      } catch (error) {
+        console.error("Failed to fetch resume:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchResume()
+  }, [])
+
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center py-24 md:py-32 px-6 overflow-hidden bg-background">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-[#01030d] pointer-events-none" />
@@ -53,6 +75,22 @@ export function HeroSection() {
             className="rounded-full bg-white text-black hover:bg-slate-100 hover:scale-105 active:scale-95 transition-all duration-500 px-12 py-8 text-lg font-semibold shadow-[0_20px_60px_-15px_rgba(255,255,255,0.2)]"
           >
             <a href="#projects">View Projects</a>
+          </Button>
+
+          <Button
+            asChild
+            size="lg"
+            variant="outline"
+            className="rounded-full border-purple-500/30 bg-purple-500/10 text-white hover:bg-purple-500/20 hover:scale-105 active:scale-95 transition-all duration-500 px-10 py-8 text-lg font-semibold shadow-[0_0_40px_-15px_rgba(168,85,247,0.4)] backdrop-blur-sm group"
+          >
+            {loading ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              <a href={resumeUrl || "#"} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                <Download className="h-5 w-5 transition-transform group-hover:-translate-y-1" />
+                Download Resume
+              </a>
+            )}
           </Button>
 
           <div className="flex items-center gap-6">

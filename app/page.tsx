@@ -8,6 +8,7 @@ import { ExperienceSection } from "@/components/experience-section"
 import { TechStackSection } from "@/components/tech-stack-section"
 import { ContactSection } from "@/components/contact-section"
 import { Footer } from "@/components/footer"
+import { Navbar } from "@/components/navbar"
 import { ScrollProgress } from "@/components/ui/scroll-progress"
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
 
   return (
     <main id="main-content" className="min-h-screen selection:bg-purple-500/30 bg-background">
+      <Navbar />
       <ScrollProgress />
       <HeroSection />
       <ServicesSection />
