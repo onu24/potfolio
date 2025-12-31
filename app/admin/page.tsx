@@ -15,18 +15,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { toast } from "sonner"
-import {
-    getProjects,
-    getAllMessages,
-    getResumeSettings,
-    updateResumeSettings,
-    type Project,
-    type ContactMessage,
-    type ResumeSettings
-} from "@/lib/firestore"
-import { FileText, Save } from "lucide-react"
+import { getProjects, getAllMessages, type Project, type ContactMessage } from "@/lib/firestore"
 
 export default function AdminDashboard() {
     const [stats, setStats] = useState({
@@ -36,19 +25,15 @@ export default function AdminDashboard() {
         featuredProjects: 0
     })
     const [recentProjects, setRecentProjects] = useState<Project[]>([])
-    const [resumeData, setResumeData] = useState<ResumeSettings | null>(null)
-    const [resumeUrl, setResumeUrl] = useState("")
     const [loading, setLoading] = useState(true)
-    const [savingResume, setSavingResume] = useState(false)
 
     useEffect(() => {
         const fetchStats = async () => {
             setLoading(true)
             try {
-                const [projects, messages, resume] = await Promise.all([
+                const [projects, messages] = await Promise.all([
                     getProjects(),
-                    getAllMessages(),
-                    getResumeSettings()
+                    getAllMessages()
                 ])
 
                 setStats({
@@ -59,10 +44,6 @@ export default function AdminDashboard() {
                 })
 
                 setRecentProjects(projects.slice(0, 3))
-                if (resume) {
-                    setResumeData(resume)
-                    setResumeUrl(resume.url)
-                }
             } catch (error) {
                 console.error("Failed to fetch dashboard stats:", error)
             } finally {
@@ -72,31 +53,6 @@ export default function AdminDashboard() {
 
         fetchStats()
     }, [])
-
-    const handleSaveResume = async () => {
-        if (!resumeUrl) return toast.error("URL is required")
-        setSavingResume(true)
-        try {
-            const res = await fetch("/api/admin/resume", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    url: resumeUrl,
-                    password: process.env.NEXT_PUBLIC_ADMIN_PASSWORD
-                })
-            })
-
-            if (!res.ok) throw new Error("Failed to update")
-
-            const updated = await getResumeSettings()
-            setResumeData(updated)
-            toast.success("Resume URL updated!")
-        } catch (error) {
-            toast.error("Failed to update resume")
-        } finally {
-            setSavingResume(false)
-        }
-    }
 
     if (loading) {
         return (
@@ -213,38 +169,6 @@ export default function AdminDashboard() {
 
                 {/* Quick Actions & Tips */}
                 <div className="space-y-4">
-                    {/* Resume Management */}
-                    <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-base font-bold flex items-center gap-2">
-                                <FileText className="w-4 h-4 text-purple-500" /> Resume Management
-                            </h3>
-                            {resumeData?.lastUpdated && (
-                                <span className="text-[10px] text-slate-500 italic">
-                                    Last updated: {new Date(resumeData.lastUpdated?.toDate?.() || resumeData.lastUpdated).toLocaleDateString()}
-                                </span>
-                            )}
-                        </div>
-                        <div className="space-y-3">
-                            <div className="space-y-1.5">
-                                <label className="text-[10px] uppercase tracking-wider font-bold text-slate-500 px-1">Resume URL (Direct Link)</label>
-                                <Input
-                                    value={resumeUrl}
-                                    onChange={(e) => setResumeUrl(e.target.value)}
-                                    placeholder="https://drive.google.com/..."
-                                    className="h-9 bg-white/5 border-white/10 text-xs rounded-xl focus:ring-purple-500/50"
-                                />
-                            </div>
-                            <Button
-                                onClick={handleSaveResume}
-                                disabled={savingResume}
-                                className="w-full bg-purple-600 hover:bg-purple-700 text-white h-9 rounded-xl text-xs font-bold transition-all"
-                            >
-                                {savingResume ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><Save className="w-3.5 h-3.5 mr-1.5" /> Update Resume URL</>}
-                            </Button>
-                        </div>
-                    </div>
-
                     <div className="bg-gradient-to-br from-purple-600/20 to-blue-600/20 border border-purple-500/20 rounded-2xl p-4">
                         <h3 className="text-base font-bold mb-3">Quick Start</h3>
                         <div className="grid grid-cols-2 gap-2">
