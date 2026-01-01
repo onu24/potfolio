@@ -364,6 +364,7 @@ export function ContactSection() {
               <Button
                 type="submit"
                 disabled={isSubmitting}
+                suppressHydrationWarning
                 className="w-full rounded-2xl bg-white/[0.05] border border-white/10 text-white hover:bg-white/[0.1] h-16 text-lg font-bold transition-all duration-500 flex items-center justify-center gap-3 group overflow-hidden relative"
               >
                 {isSubmitting ? (
