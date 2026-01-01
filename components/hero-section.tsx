@@ -50,9 +50,19 @@ export function HeroSection() {
           <Button
             asChild
             size="lg"
-            className="rounded-full bg-white text-black hover:bg-slate-100 hover:scale-105 active:scale-95 transition-all duration-500 px-12 py-8 text-lg font-semibold shadow-[0_20px_60px_-15px_rgba(255,255,255,0.2)]"
+            className="rounded-full bg-white text-black hover:bg-slate-100 hover:scale-[1.03] active:scale-[0.97] transition-all duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)] px-12 py-8 text-lg font-semibold shadow-[0_20px_60px_-15px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_-5px_rgba(124,58,237,0.4)] focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-4 ring-offset-background outline-none"
           >
             <a href="#projects">View Projects</a>
+          </Button>
+
+          <Button
+            asChild
+            size="lg"
+            className="rounded-full bg-white/[0.03] border border-white/10 backdrop-blur-2xl hover:bg-white/[0.08] hover:border-purple-500/40 hover:scale-[1.03] active:scale-[0.97] transition-all duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)] px-12 py-8 text-lg font-semibold text-slate-300 hover:text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] hover:shadow-[0_0_30px_-5px_rgba(124,58,237,0.3)] focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-4 ring-offset-background outline-none"
+          >
+            <a href="https://drive.google.com/file/d/11FyOygLjh9uhkEfA-JOQJRrNt9n50cOe/view?usp=sharing" target="_blank" rel="noopener noreferrer">
+              View Resume
+            </a>
           </Button>
 
           <div className="flex items-center gap-6">
