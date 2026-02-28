@@ -104,14 +104,17 @@ export function ProjectsSection() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-5xl mx-auto">
             {projects.map((project, index) => (
-              <motion.div
+              <motion.a
                 key={project.id}
+                href={project.link || "#"}
+                target={project.link ? "_blank" : undefined}
+                rel={project.link ? "noopener noreferrer" : undefined}
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: index * 0.1, ease: [0.19, 1, 0.22, 1] }}
-                whileHover={{ y: -8 }}
-                className="group relative flex flex-col rounded-3xl bg-white/[0.02] border border-white/[0.06] overflow-hidden hover:bg-white/[0.04] hover:border-purple-500/30 transition-all duration-500"
+                whileHover={{ y: -8, scale: 1.02 }}
+                className="group relative flex flex-col rounded-3xl bg-white/[0.02] border border-white/[0.06] overflow-hidden hover:bg-white/[0.04] hover:border-purple-500/30 hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-500 cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500"
               >
                 <div className="aspect-video relative overflow-hidden bg-slate-900 border-b border-white/5">
                   {project.imageUrl ? (
@@ -150,18 +153,13 @@ export function ProjectsSection() {
                   <p className="text-slate-400 text-base leading-relaxed mb-8 flex-grow">{project.description}</p>
 
                   {project.link && (
-                    <a
-                      href={project.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-bold text-white/60 group-hover:text-white transition-colors duration-300 mt-auto"
-                    >
+                    <div className="inline-flex items-center gap-2 text-sm font-bold text-white/60 group-hover:text-white transition-colors duration-300 mt-auto">
                       View project
                       <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
-                    </a>
+                    </div>
                   )}
                 </div>
-              </motion.div>
+              </motion.a>
             ))}
           </div>
         )}
